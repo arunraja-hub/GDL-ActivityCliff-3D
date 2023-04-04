@@ -5,7 +5,8 @@ from rdkit.Chem.rdmolops import GetAdjacencyMatrix
 from rdkit.ML.Descriptors.MoleculeDescriptors import MolecularDescriptorCalculator
 from statsmodels.distributions.empirical_distribution import ECDF as statsmodels_ecdf
 from torch_geometric.data import Data as GeometricData
-
+from e3fp.fingerprint.fprint import Fingerprint
+from e3fp.pipeline import fprints_from_smiles
 
 
 def rdkit_mol_descriptors_from_smiles(smiles_string, descriptor_list = None):
@@ -102,6 +103,15 @@ def circular_fps_from_smiles(smiles_string,
 
     return np.array(feature_list)
 
+
+def e3fp_from_smiles(smiles_string):
+
+    """Function to create E3FP from a SMILES string."""
+    fprint_params = {'bits': 2**10, 'radius_multiplier': 2, 'rdkit_invariants': True}
+    confgen_params = {'max_energy_diff': 20.0, 'first': 1}
+
+    feature_list = fprints_from_smiles(smiles_string, "placeholder_name",  fprint_params=fprint_params,confgen_params=confgen_params, save=False)
+    return np.array(feature_list)
 
 
 def one_hot_encoding(x, permitted_list):
