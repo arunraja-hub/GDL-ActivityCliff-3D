@@ -68,13 +68,13 @@ def create_data_split_dictionary_for_mols_and_mmps(x_smiles,
                     ind_two_out_unseen_core_mmps.append(j)
             
             # add index data structure to dictionary
-            data_split_dictionary[(m, k)] = (ind_train_mols, 
+            data_split_dictionary[(m, k)] = [ind_train_mols, 
                                              ind_test_mols,
                                              ind_zero_out_mmps,
                                              ind_one_out_mmps,
                                              ind_two_out_mmps,
                                              ind_two_out_seen_core_mmps,
-                                             ind_two_out_unseen_core_mmps)
+                                             ind_two_out_unseen_core_mmps]
             
     return data_split_dictionary
 

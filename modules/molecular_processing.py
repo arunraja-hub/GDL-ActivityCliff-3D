@@ -95,12 +95,14 @@ def circular_fps_from_smiles(smiles_string,
     """Function to create an extended-connectivity fingerprint (ECFP) from a SMILES string."""
 
     molecule = Chem.MolFromSmiles(smiles_string)
+    print(smiles_string)
+    print(molecule)
     feature_list = Chem.rdMolDescriptors.GetMorganFingerprintAsBitVect(molecule,
                                                                        radius = radius,
                                                                        nBits = bitstring_length,
                                                                        useFeatures = use_features,
                                                                        useChirality = use_chirality)
-
+    print(np.array(feature_list).shape)
     return np.array(feature_list)
 
 
