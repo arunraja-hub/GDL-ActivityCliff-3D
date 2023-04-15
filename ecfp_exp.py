@@ -12,6 +12,8 @@ import json
 import torch
 import torch_geometric
 import argparse
+import os
+import os.path
 
 # RDKit
 from rdkit import Chem, RDLogger
@@ -27,13 +29,11 @@ RDLogger.DisableLog('rdApp.*')
 warnings.filterwarnings("ignore")
 
 parser = argparse.ArgumentParser()
-parser.add_argument('dataset', type=str, help='Description of arg1')
-parser.add_argument('model', type=str, help='Description of arg2')
+parser.add_argument('--dataset', type=str, help='Description of arg1')
+parser.add_argument('--model', type=str, help='Description of arg2')
 
 args = parser.parse_args()
-#rf
-#knn
-#gin
+#rf,knn,gin
 
 datafolder_filepath = "data/"+args.dataset
 
@@ -42,7 +42,7 @@ settings_dict["target_name"] = args.dataset
 
 
 
-x_smiles = np.loadtxt(datafolder_filepath + '/x_smiles.txt', dtype=str)
+x_smiles = np.load(datafolder_filepath + '/x_smiles.npy', allow_pickle=True)
 X_smiles_mmps = load_dict(datafolder_filepath + '/X_smiles_mmps.txt')
 y = np.loadtxt(datafolder_filepath + '/y.txt')
 y_mmps = np.loadtxt(datafolder_filepath + '/y_mmps.txt')
@@ -66,18 +66,22 @@ filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["meth
 # create dictionary that maps SMILES strings to ECFPs
 x_smiles_to_fp_dict = {}
 
-for smiles in x_smiles:
-    
+if os.path.isfile(datafolder_filepath +'/smiles_ecfp_dict.pkl'):
+    x_smiles_to_fp_dict = load_dict(datafolder_filepath +'/smiles_ecfp_dict.pkl')
 
-    x_smiles_to_fp_dict.update({smiles : circular_fps_from_smiles(smiles,
-                                         radius = settings_dict["radius"],
-                                         bitstring_length = settings_dict["bitstring_length"],
-                                         use_features = settings_dict["use_features"],
-                                         use_chirality = settings_dict["use_chirality"])})
-with open('smiles_ecfp_dict.txt', 'w') as file:
-    file.write(json.dumps(x_smiles_to_fp_dict))
+else:
+    for smiles in x_smiles:
+        
 
-if args[0] == "rf":
+        x_smiles_to_fp_dict.update({smiles : circular_fps_from_smiles(smiles,
+                                            radius = settings_dict["radius"],
+                                            bitstring_length = settings_dict["bitstring_length"],
+                                            use_features = settings_dict["use_features"],
+                                            use_chirality = settings_dict["use_chirality"])})
+        with open(datafolder_filepath +'/smiles_ecfp_dict.pkl', 'wb') as f:
+            pickle.dump(x_smiles_to_fp_dict,f)
+
+if args.model == "rf":
     # set directory for saving of experimental results
     settings_dict["method_name"] = "ecfp_rf"
     filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
@@ -112,7 +116,9 @@ if args[0] == "rf":
         # extract indices for D_train and D_test for this data split
         (ind_train_mols, ind_test_mols) = data_split_dictionary[(m,k)][0:2]
         
-        # generate training- and test data (for individual molecules)        
+        # generate training- and test data (for individual molecules)   
+        print(len(x_smiles))    
+        print(len(x_smiles_to_fp_dict))      
         X_fp_train = np.array([x_smiles_to_fp_dict[smiles] for smiles in x_smiles[ind_train_mols]])
         y_train = y[ind_train_mols]
         
@@ -148,11 +154,7 @@ if args[0] == "rf":
     settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
     save_experimental_settings(filepath, settings_dict)
 
-    with open("ecfp_rf.txt", "w") as out:
-        out.write(display_experimental_results(filepath, decimals = 4))
-
-
-if args[0] == "knn":
+if args.model == "knn":
     # set directory for saving of experimental results
     settings_dict["method_name"] = "ecfp_knn"
     filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
@@ -218,10 +220,7 @@ if args[0] == "knn":
     settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
     save_experimental_settings(filepath, settings_dict)
 
-    with open("ecfp_knn.txt", "w") as out:
-        out.write(display_experimental_results(filepath, decimals = 4))
-
-if args[0] == "mlp":
+if args.model == "mlp":
     # set directory for saving of experimental results
     settings_dict["method_name"] = "ecfp_mlp"
     filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
@@ -312,8 +311,7 @@ if args[0] == "mlp":
     settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
     save_experimental_settings(filepath, settings_dict)
     
-    with open("ecfp_mlp.txt", "w") as out:
-        out.write(display_experimental_results(filepath, decimals = 4))
+display_experimental_results(filepath, settings_dict["method_name"],decimals = 4)
 
                 
 

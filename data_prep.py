@@ -45,7 +45,7 @@ settings_dict["n_molecules"] = len(dataframe)
 
 # construct array with SMILES strings
 x_smiles = dataframe["SMILES"].values
-np.savetxt(datafolder_filepath +'/x_smiles.txt',x_smiles,fmt ="%s",delimiter=',')
+np.save(datafolder_filepath +'/x_smiles',x_smiles)
 
 y = -np.log10(dataframe[activity_type].values.astype(float))
 

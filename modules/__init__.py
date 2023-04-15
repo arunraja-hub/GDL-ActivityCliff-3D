@@ -2,5 +2,6 @@ from .data_splitting import *
 from .molecular_processing import *
 from .scoring import *
 from .visualisation import *
-from .deep_learning_pytorch import *
+from .gin import *
+from .gsn import *
 from .helper import *

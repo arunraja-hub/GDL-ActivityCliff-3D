@@ -15,7 +15,7 @@ use_features = False
 use_chirality = True
  
 j_splits = 5
-h_iters = 10
+h_iters = 1
 random_search_scoring = neg_mean_absolute_error
 random_search_verbose = 1
 random_search_random_state = 42

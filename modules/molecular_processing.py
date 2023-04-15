@@ -95,8 +95,7 @@ def circular_fps_from_smiles(smiles_string,
     """Function to create an extended-connectivity fingerprint (ECFP) from a SMILES string."""
 
     molecule = Chem.MolFromSmiles(smiles_string)
-    print(smiles_string)
-    print(molecule)
+
     feature_list = Chem.rdMolDescriptors.GetMorganFingerprintAsBitVect(molecule,
                                                                        radius = radius,
                                                                        nBits = bitstring_length,
@@ -113,8 +112,7 @@ def e3fp_from_smiles(smiles_string):
     confgen_params = {'max_energy_diff': 20.0, 'first': 1}
 
     feature_list = fprints_from_smiles(smiles_string, "placeholder_name",  fprint_params=fprint_params,confgen_params=confgen_params, save=False)
-    return np.array(feature_list)
-
+    return np.array(feature_list[0].to_rdkit())
 
 def one_hot_encoding(x, permitted_list):
     """

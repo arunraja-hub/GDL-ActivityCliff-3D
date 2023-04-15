@@ -37,7 +37,7 @@ def binary_classification_scores(y_true, y_pred_proba_pos, display_results = Fal
 
         # display scores
         if display_results == True:
-            display(scores_df)
+            print(scores_df)
 
         return scores_df
         
@@ -128,7 +128,7 @@ def binary_classification_scores(y_true, y_pred_proba_pos, display_results = Fal
 
         # display scores
         if display_results == True:
-            display(scores_df)
+            print(scores_df)
 
         return scores_df
 
@@ -149,7 +149,7 @@ def regression_scores(y_true, y_pred, display_results = False):
 
         # display scores
         if display_results == True:
-            display(scores_df)
+            print(scores_df)
 
         return scores_df
         
@@ -191,7 +191,7 @@ def regression_scores(y_true, y_pred, display_results = False):
 
         # display scores
         if display_results == True:
-            display(scores_df)
+            print(scores_df)
 
         return scores_df
 
@@ -219,13 +219,13 @@ def summarise_scores_from_cubic_scores_array(scores_array,
     summarised_scores_df = pd.DataFrame(data = summarised_scores_array, index = ["Avg.", "Std."], columns = columns)
 
     if display_results == True:
-        display(summarised_scores_df)
+        print(summarised_scores_df)
 
     return summarised_scores_df
 
 
 
-def display_experimental_results(filepath, decimals = 2):
+def display_experimental_results(filepath,exp_name, decimals = 2):
     """
     Print out average experimental results over k-fold cross validation with m random seeds for a chosen QSAR model and data set.
     """
@@ -233,24 +233,28 @@ def display_experimental_results(filepath, decimals = 2):
     with open(filepath + 'experimental_settings.txt') as f:
         print(f.read())
 
-    for scores in ["scores_qsar_train", "scores_qsar_test", 
-                   "scores_ac_train", "scores_ac_inter", "scores_ac_test", "scores_ac_cores", 
-                   "scores_pd_train", "scores_pd_inter", "scores_pd_test", "scores_pd_cores",
-                   "scores_pd_ac_pos_train", "scores_pd_ac_pos_inter", "scores_pd_ac_pos_test", "scores_pd_ac_pos_cores"]:
+    for i, scores in enumerate(["scores_qsar_train", "scores_qsar_test", 
+                "scores_ac_train", "scores_ac_inter", "scores_ac_test", "scores_ac_cores", 
+                "scores_pd_train", "scores_pd_inter", "scores_pd_test", "scores_pd_cores",
+                "scores_pd_ac_pos_train", "scores_pd_ac_pos_inter", "scores_pd_ac_pos_test", "scores_pd_ac_pos_cores"]):
 
         if scores.startswith("scores_qsar"):
             task_type = "regression"
         else:
             task_type = "classification"
 
-        print(scores, "\n")
-        summarise_scores_from_cubic_scores_array(np.load(filepath + scores + ".npy"), 
-                                                 display_results = True, 
-                                                 decimals = decimals, 
-                                                 task_type = task_type);
+        
+        summarised_scores = summarise_scores_from_cubic_scores_array(np.load(filepath + scores + ".npy"), 
+                                                display_results = True, 
+                                                decimals = decimals, 
+                                                task_type = task_type)
+        summarised_scores.index.name = scores
+        
+        summarised_scores.to_csv('/data/icarus/raja/opig/results/'+exp_name+'_scoring_results.csv', mode='a')
+
         print("\n \n")
 
-
+    
 
 def create_scores_dict(k_splits, m_reps, len_y, n_regr_metrics = 8, n_class_metrics = 12):
     """
@@ -351,6 +355,8 @@ def save_qsar_ac_pd_results(filepath, scores_dict):
     """
     
     delete_all_files_in_folder(filepath)
+
+    print(scores_dict)
 
     np.save(filepath + "y_pred_array.npy", scores_dict["y_pred_array"])
 
