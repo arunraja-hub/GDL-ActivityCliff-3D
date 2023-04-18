@@ -1,0 +1,13 @@
+Experimental Settings: 
+ 
+target_name = postera_sars_cov_2_mpro
+n_molecules = 1924
+n_mmps = 10832
+method_name = e3fp_knn
+ 
+k_splits = 2
+m_reps = 3
+random_state_cv = 42
+ 
+runtime = 00:02:08
+ 
