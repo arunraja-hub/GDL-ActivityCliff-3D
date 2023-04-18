@@ -87,7 +87,7 @@ if args.model == "rf":
                                             "mlp_hidden_batchnorm": [True],
                                             "eps": [0],
                                             "train_eps": [False],
-                                            "pooling_operation": [global_max_pool]}
+                                            "pooling_operation": [global_max_pool, global_mean_pool, global_add_pool]}
 
     settings_dict["mlp_hyperparameter_grid"] = {"architecture": [arch(None, 1, w, d) for (w,d) in all_combs_list([None], [0])],
                                             "hidden_activation": [nn.ReLU()],
