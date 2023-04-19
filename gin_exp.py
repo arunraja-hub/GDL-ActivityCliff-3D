@@ -289,3 +289,5 @@ if args.model == "mlp":
     # save experimental settings
     settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
     save_experimental_settings(filepath, settings_dict)
+
+display_experimental_results(filepath,settings_dict["target_name"]+'/'+settings_dict["method_name"], decimals = 4)
