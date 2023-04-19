@@ -14,6 +14,7 @@ import torch_geometric
 import argparse
 import os
 import os.path
+import sys
 
 # RDKit
 from rdkit import Chem, RDLogger
@@ -37,7 +38,8 @@ args = parser.parse_args()
 #knn
 #gin
 
-datafolder_filepath = "data/"+args.dataset
+print(sys.path)
+datafolder_filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"data/"+args.dataset
 
 settings_dict = load_dict(datafolder_filepath + "/settings_dict.txt")
 settings_dict["target_name"] = args.dataset
@@ -64,7 +66,7 @@ graph_list = create_pytorch_geometric_data_set_from_smiles_and_targets(x_smiles,
 if args.model == "rf":
     # set directory for saving of experimental results
     settings_dict["method_name"] = "gin_rf"
-    filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+    filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
 
     # GNN + MLP: hyperparameter- and optuna settings
 
