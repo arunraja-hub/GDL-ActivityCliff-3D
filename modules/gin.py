@@ -283,9 +283,11 @@ def train_mlps_via_optuna(dataset,
                              "performance_metrics": ["regression"],
                              "print_results_per_epochs": [None]}
     """
-    
+    print('tuning begins')
+    print(optuna_options)
+
     # set verbosity
-    optuna.logging.set_verbosity(0)
+    optuna.logging.set_verbosity(optuna.logging.WARNING)
     
     # split dataset into training and validation sets
     train_size = int(optuna_options["frac_train"] * len(dataset))

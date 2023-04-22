@@ -14,6 +14,8 @@ import torch_geometric
 import argparse
 import os
 import os.path
+from datetime import datetime
+
 
 # RDKit
 from rdkit import Chem, RDLogger
@@ -147,12 +149,7 @@ if args.model == "rf":
         # give feedback on completion of this subexperiment
         print("Subexperiment ", (m,k), " completed. \n")
 
-    # save experimental results
-    save_qsar_ac_pd_results(filepath, scores_dict)
 
-    # save experimental settings
-    settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
-    save_experimental_settings(filepath, settings_dict)
 
 if args.model == "knn":
     # set directory for saving of experimental results
@@ -213,12 +210,6 @@ if args.model == "knn":
         # give feedback on completion of this subexperiment
         print("Subexperiment ", (m,k), " completed. \n")
 
-    # save experimental results
-    save_qsar_ac_pd_results(filepath, scores_dict)
-
-    # save experimental settings
-    settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
-    save_experimental_settings(filepath, settings_dict)
 
 if args.model == "mlp":
     # set directory for saving of experimental results
@@ -304,13 +295,16 @@ if args.model == "mlp":
         # give feedback on completion of this subexperiment
         print("Subexperiment ", (m,k), " completed. \n")
 
-    # save experimental results
-    save_qsar_ac_pd_results(filepath, scores_dict)
+# save experimental results
+save_qsar_ac_pd_results(filepath, scores_dict)
 
-    # save experimental settings
-    settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
-    save_experimental_settings(filepath, settings_dict)
-    
+# save experimental settings
+settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
+now = datetime.now()
+settings_dict["datetime"] = now.strftime("%d/%m/%Y %H:%M:%S")
+
+save_experimental_settings(filepath, settings_dict)
+
 display_experimental_results(filepath, settings_dict["method_name"],decimals = 4)
 
                 

@@ -14,6 +14,7 @@ import torch_geometric
 import argparse
 import os
 import os.path
+from datetime import datetime
 
 # RDKit
 from rdkit import Chem, RDLogger
@@ -31,6 +32,7 @@ warnings.filterwarnings("ignore")
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, help='Description of arg1')
 parser.add_argument('--model', type=str, help='Description of arg2')
+parser.add_argument('--rad', type=str, help='Description of arg2')
 
 args = parser.parse_args()
 #rf
@@ -68,25 +70,17 @@ filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["meth
 # create dictionary that maps SMILES strings to E3FPs
 x_smiles_to_fp_dict = {}
 
-if os.path.isfile(datafolder_filepath +'/smiles_e3fp_dict.pkl'):
-    x_smiles_to_fp_dict = load_dict(datafolder_filepath +'/smiles_e3fp_dict.pkl')
+if os.path.isfile(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl'):
+    x_smiles_to_fp_dict = load_dict(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl')
     print('e3fp smiles loaded')
     for j in x_smiles_to_fp_dict.keys():
         x_smiles_to_fp_dict[j] = np.array(x_smiles_to_fp_dict[j][0].to_rdkit())
-#     # breakpoint()
-
-# if os.path.isfile('data/smiles_e3fp_dict.pkl'):
-#     x_smiles_to_fp_dict = load_dict('data/smiles_e3fp_dict.pkl')
-#     print('e3fp smiles loaded')
-#     for j in x_smiles_to_fp_dict.keys():
-#         x_smiles_to_fp_dict[j] = np.array(x_smiles_to_fp_dict[j][0].to_rdkit())
-# #     breakpoint()
 
 else:
-    print('generating e3fp smiles')
+    print('generating e3fp smiles for radius multiplier =', args.rad)
     for smiles in x_smiles:
-        x_smiles_to_fp_dict.update({smiles : e3fp_from_smiles(smiles)})
-        with open(datafolder_filepath +'/smiles_e3fp_dict.pkl', 'wb') as f:
+        x_smiles_to_fp_dict.update({smiles : e3fp_from_smiles(smiles, float(args.rad))})
+        with open(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl', 'wb') as f:
             pickle.dump(x_smiles_to_fp_dict,f)
 
 if args.model == "rf":
@@ -157,13 +151,6 @@ if args.model == "rf":
         # give feedback on completion of this subexperiment
         print("Subexperiment ", (m,k), " completed. \n")
 
-    # save experimental results
-    save_qsar_ac_pd_results(filepath, scores_dict)
-
-    # save experimental settings
-    settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
-    save_experimental_settings(filepath, settings_dict)
-
 
 if args.model == "knn":
     # set directory for saving of experimental results
@@ -223,14 +210,6 @@ if args.model == "knn":
         
         # give feedback on completion of this subexperiment
         print("Subexperiment ", (m,k), " completed. \n")
-
-    # save experimental results
-    save_qsar_ac_pd_results(filepath, scores_dict)
-
-    # save experimental settings
-    settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
-    save_experimental_settings(filepath, settings_dict)
-
 
 if args.model == "mlp":
     # set directory for saving of experimental results
@@ -316,13 +295,14 @@ if args.model == "mlp":
         # give feedback on completion of this subexperiment
         print("Subexperiment ", (m,k), " completed. \n")
 
-    # save experimental results
-    save_qsar_ac_pd_results(filepath, scores_dict)
+# save experimental results
+save_qsar_ac_pd_results(filepath, scores_dict)
 
-    # save experimental settings
-    settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
-    save_experimental_settings(filepath, settings_dict)
-
+# save experimental settings
+settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
+now = datetime.now()
+settings_dict["datetime"] = now.strftime("%d/%m/%Y %H:%M:%S")
+save_experimental_settings(filepath, settings_dict)
 
 display_experimental_results(filepath,settings_dict["target_name"]+'/'+settings_dict["method_name"], decimals = 4)
     

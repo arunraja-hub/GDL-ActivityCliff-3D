@@ -105,10 +105,10 @@ def circular_fps_from_smiles(smiles_string,
     return np.array(feature_list)
 
 
-def e3fp_from_smiles(smiles_string):
+def e3fp_from_smiles(smiles_string, radius_multiplier):
 
     """Function to create E3FP from a SMILES string."""
-    fprint_params = {'bits': 2**10, 'radius_multiplier': 2, 'rdkit_invariants': True}
+    fprint_params = {'bits': 2**10, 'radius_multiplier': radius_multiplier, 'rdkit_invariants': True}
     confgen_params = {'max_energy_diff': 20.0, 'first': 1}
     #look into details of conformation generation of e3fp
 

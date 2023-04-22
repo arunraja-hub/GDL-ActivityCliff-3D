@@ -15,6 +15,8 @@ import argparse
 import os
 import os.path
 import sys
+from datetime import datetime
+
 
 # RDKit
 from rdkit import Chem, RDLogger
@@ -41,7 +43,8 @@ args = parser.parse_args()
 print(sys.path)
 datafolder_filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"data/"+args.dataset
 
-settings_dict = load_dict(datafolder_filepath + "/settings_dict.txt")
+# settings_dict = load_dict(datafolder_filepath + "/settings_dict.txt")
+settings_dict = {}
 settings_dict["target_name"] = args.dataset
 
 
@@ -69,16 +72,19 @@ if args.model == "rf":
     filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
 
     # GNN + MLP: hyperparameter- and optuna settings
-
-    settings_dict["optuna_options"] = {"h_iters": 20,
+# "h_iters": 20
+    
+    settings_dict["optuna_options"] = {"h_iters": 2,
                                     "frac_train": 0.8,
                                     "data_splitting_seed": 42,
                                     "performance_metric": mean_absolute_error,
                                     "direction": "minimize",
                                     "sampler": optuna.samplers.TPESampler(), 
-                                    "pruner": optuna.pruners.NopPruner()} 
+                                    "pruner": optuna.pruners.NopPruner()}
+    print(settings_dict["optuna_options"])
+    breakpoint() 
 
-    settings_dict["gin_hyperparameter_grid"] = {"n_conv_layers": [1, 2, 3],
+    settings_dict["gin_hyperparameter_grid"] = {"n_conv_layers": [1],
                                             "input_dim": [79],
                                             "hidden_dim": [64, 128, 256],
                                             "mlp_n_hidden_layers": [2],
@@ -89,7 +95,9 @@ if args.model == "rf":
                                             "mlp_hidden_batchnorm": [True],
                                             "eps": [0],
                                             "train_eps": [False],
-                                            "pooling_operation": [global_max_pool, global_mean_pool, global_add_pool]}
+                                            "pooling_operation": [global_max_pool]}
+    # , 2, 3
+    # global_mean_pool, global_add_pool
 
     settings_dict["mlp_hyperparameter_grid"] = {"architecture": [arch(None, 1, w, d) for (w,d) in all_combs_list([None], [0])],
                                             "hidden_activation": [nn.ReLU()],
@@ -191,12 +199,7 @@ if args.model == "rf":
         # give feedback on completion of this subexperiment
         print("Subexperiment ", (m,k), " completed. \n")
 
-    # save experimental results
-    save_qsar_ac_pd_results(filepath, scores_dict)
 
-    # save experimental settings
-    settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
-    save_experimental_settings(filepath, settings_dict)
 
 if args.model == "mlp":
     # set directory for saving of experimental results
@@ -285,11 +288,12 @@ if args.model == "mlp":
         # give feedback on completion of this subexperiment
         print("Subexperiment ", (m,k), " completed. \n")
 
-    # save experimental results
-    save_qsar_ac_pd_results(filepath, scores_dict)
+# save experimental results
+save_qsar_ac_pd_results(filepath, scores_dict)
 
-    # save experimental settings
-    settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
-    save_experimental_settings(filepath, settings_dict)
-
+# save experimental settings
+settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
+now = datetime.now()
+settings_dict["datetime"] = now.strftime("%d/%m/%Y %H:%M:%S")
+save_experimental_settings(filepath, settings_dict)
 display_experimental_results(filepath,settings_dict["target_name"]+'/'+settings_dict["method_name"], decimals = 4)
