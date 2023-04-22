@@ -84,7 +84,7 @@ if args.model == "rf":
     print(settings_dict["optuna_options"])
     breakpoint() 
 
-    settings_dict["gin_hyperparameter_grid"] = {"n_conv_layers": [1],
+    settings_dict["gin_hyperparameter_grid"] = {"n_conv_layers": [1,2,3],
                                             "input_dim": [79],
                                             "hidden_dim": [64, 128, 256],
                                             "mlp_n_hidden_layers": [2],
