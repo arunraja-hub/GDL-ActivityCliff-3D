@@ -43,8 +43,8 @@ args = parser.parse_args()
 print(sys.path)
 datafolder_filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"data/"+args.dataset
 
-# settings_dict = load_dict(datafolder_filepath + "/settings_dict.txt")
-settings_dict = {}
+settings_dict = load_dict(datafolder_filepath + "/settings_dict.txt")
+# settings_dict = {}
 settings_dict["target_name"] = args.dataset
 
 
