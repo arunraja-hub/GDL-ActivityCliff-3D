@@ -1,6 +1,5 @@
 matplotlib
 numpy
-optuna
 pandas
 rdkit
 scikit_learn
@@ -9,5 +8,8 @@ seaborn
 spektral
 statsmodels
 tensorflow
-torch torchvision torchaudio
+torch 
+torchvision 
+torchaudio
 torch_geometric
+e3fp

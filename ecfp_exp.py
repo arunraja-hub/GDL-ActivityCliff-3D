@@ -61,7 +61,7 @@ settings_dict["use_chirality"] = True
 
 # set directory for saving of experimental results
 # ecfp_rf
-settings_dict["method_name"] = args.dataset
+settings_dict["method_name"] = args.model
 filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
 
 
@@ -305,7 +305,7 @@ settings_dict["datetime"] = now.strftime("%d/%m/%Y %H:%M:%S")
 
 save_experimental_settings(filepath, settings_dict)
 
-display_experimental_results(filepath, settings_dict["method_name"],decimals = 4)
+display_experimental_results(filepath,decimals = 4)
 
                 
 
