@@ -41,7 +41,7 @@ args = parser.parse_args()
 #gin
 
 print(sys.path)
-datafolder_filepath = "data/"+args.dataset
+datafolder_filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/data/"+args.dataset
 # "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"data/"+args.dataset
 
 
