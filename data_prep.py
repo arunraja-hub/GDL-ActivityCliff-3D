@@ -31,7 +31,7 @@ parser.add_argument('--dataset', metavar='N', type=str, nargs='+',
 args = parser.parse_args()
 
 settings_dict = {}
-datafolder_filepath = "data/"+args.dataset[0]
+datafolder_filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/data/"+args.dataset[0]
 settings_dict["target_name"] = args.dataset[0]
 
 if args.dataset[0] == "postera_sars_cov_2_mpro":
