@@ -106,7 +106,7 @@ data_split_dictionary = create_data_split_dictionary_for_mols_and_mmps(x_smiles,
                                                                        random_state_cv = settings_dict["random_state_cv"])
 save_dict(data_split_dictionary,datafolder_filepath +'/data_split_dictionary.txt')
 
-save_dict(settings_dict,'data/'+ args.dataset[0]+'/settings_dict.txt')
+save_dict(settings_dict,datafolder_filepath+'/settings_dict.txt')
 
 # saving X_smiles_mmps,y, y_mmps, y_mmps_pd
 save_dict(X_smiles_mmps,datafolder_filepath +'/X_smiles_mmps.txt')
