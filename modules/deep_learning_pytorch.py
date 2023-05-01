@@ -1,20 +1,10 @@
 import numpy as np
-import networkx as nx
 import torch
 import torch.nn as nn
 import optuna
 from torch.utils.data import DataLoader, TensorDataset
-from torch_geometric.nn import MessagePassing, GINConv, global_add_pool, global_max_pool, global_mean_pool
+from torch_geometric.nn import GINConv, global_add_pool, global_max_pool, global_mean_pool
 from torch_geometric.loader import DataLoader as GeometricDataLoader
-from torch_scatter import scatter_add
-from torch.nn import Linear, Parameter
-from torch_geometric.nn import MessagePassing
-from torch_geometric.utils import add_self_loops, degree
-from torch.nn import functional as F
-from torchdrug import layers, core
-
-
-
 from optuna.trial import TrialState
 from .scoring import regression_scores, binary_classification_scores
 
@@ -30,166 +20,6 @@ def arch(input_dim = 200, output_dim = 1, hidden_width = 300, hidden_depth = 10)
     
     return arch
 
-class GSNLayer(MessagePassing):
-    """
-    Message passing layer of the GSN from `Improving Graph Neural Network Expressivity
-    via Subgraph Isomorphism Counting`_.
-
-    This implements the GSN-v (vertex-count) variant in the original paper.
-
-    .. _Improving Graph Neural Network Expressivity via Subgraph Isomorphism Counting:
-        https://arxiv.org/pdf/2006.09252.pdf
-
-    Parameters:
-        input_dim (int): input dimension
-        edge_input_dim (int): dimension of edge features
-        max_cycle (int, optional): maximum size of graph substructures
-        mlp_hidden_dims (list of int, optional): hidden dims of edge network and update network
-        batch_norm (bool, optional): apply batch normalization on nodes or not
-        activation (str or function, optional): activation function
-    """
-
-    def __init__(self, input_dim, edge_input_dim, MIN_CYCLE=3, max_cycle=8, mlp_hidden_dims=None,
-                 batch_norm=False, activation='relu'):
-        super(GSNLayer, self).__init__()
-        self.input_dim = input_dim
-        self.output_dim = input_dim
-        self.edge_input_dim = edge_input_dim
-        self.node_counts_dim = max_cycle - MIN_CYCLE + 1
-        if mlp_hidden_dims is None:
-            mlp_hidden_dims = []
-
-        if batch_norm:
-            self.batch_norm = nn.BatchNorm1d(input_dim)
-        else:
-            self.batch_norm = None
-        if isinstance(activation, str):
-            self.activation = getattr(F, activation)
-        else:
-            self.activation = activation
-
-        self.msg_mlp = layers.MLP(2 * input_dim + 2 * self.node_counts_dim + edge_input_dim,
-                                  list(mlp_hidden_dims) + [input_dim], activation)
-        self.update_mlp = layers.MLP(2 * input_dim, list(mlp_hidden_dims) + [input_dim], activation)
-
-    def message(self, graph, input):
-        node_in = graph.edge_list[:, 0]
-        node_out = graph.edge_list[:, 1]
-        if graph.num_edge:
-            message = torch.cat([input[node_in], input[node_out],
-                                 graph.node_structural_feature[node_in].float(),
-                                 graph.node_structural_feature[node_out].float(),
-                                 graph.edge_feature.float()], dim=-1)
-            message = self.msg_mlp(message)
-        else:
-            message = torch.zeros(0, self.input_dim, device=graph.device)
-        return message
-
-    def aggregate(self, graph, message):
-        node_out = graph.edge_list[:, 1]
-        edge_weight = graph.edge_weight.unsqueeze(-1)
-        update = scatter_add(message * edge_weight, node_out, dim=0, dim_size=graph.num_node)
-        return update
-
-    def combine(self, input, update):
-        output = torch.cat([input, update], dim=-1)
-        output = self.update_mlp(output)
-        if self.batch_norm:
-            output = self.batch_norm(output)
-        if self.activation:
-            output = self.activation(output)
-        return output
-
-class GSN(nn.Module, core.Configurable):
-    """
-    Graph Substructure Network proposed in `Improving Graph Neural Network Expressivity
-    via Subgraph Isomorphism Counting`_.
-
-    This implements the GSN-v (vertex-count) variant in the original paper.
-
-    .. _Improving Graph Neural Network Expressivity via Subgraph Isomorphism Counting:
-        https://arxiv.org/pdf/2006.09252.pdf
-
-    Parameters:
-        input_dim (int): input dimension
-        hidden_dim (int): hidden dimension
-        edge_input_dim (int): dimension of edge features
-        num_relation (int): number of relations
-        num_layer (int): number of hidden layers
-        num_mlp_layer (int, optional): number of MLP layers in each message passing layer
-        max_cycle (int, optional): maximum size of graph substructures
-        short_cut (bool, optional): use short cut or not
-        batch_norm (bool, optional): apply batch normalization or not
-        activation (str or function, optional): activation function
-        concat_hidden (bool, optional): concat hidden representations from all layers as output
-        readout (str, optional): readout function. Available functions are ``sum`` and ``mean``.
-    """
-
-    def __init__(self, input_dim, hidden_dim, edge_input_dim, num_relation, num_layer, num_mlp_layer=2, max_cycle=8,
-                 short_cut=False, batch_norm=False, activation='relu', concat_hidden=False, pooling_operation=global_add_pool):
-        super(GSN, self).__init__()
-
-        self.input_dim = input_dim
-        self.edge_input_dim = edge_input_dim
-        if concat_hidden:
-            feature_dim = hidden_dim * num_layer
-        else:
-            feature_dim = hidden_dim
-        self.output_dim = feature_dim
-        self.num_relation = num_relation
-        self.num_layer = num_layer
-        self.max_cycle = max_cycle
-        self.short_cut = short_cut
-        self.concat_hidden = concat_hidden
-
-        self.linear = nn.Linear(input_dim, hidden_dim)
-
-        self.layers = nn.ModuleList()
-        for i in range(num_layer):
-            self.layers.append(GSNLayer(hidden_dim, edge_input_dim, max_cycle, [hidden_dim] * (num_mlp_layer - 1),
-                                        batch_norm, activation))
-        
-        # define final pooling operation to reduce graph to vector
-        self.pool = pooling_operation
-
-        
-    def forward(self, graph, input, all_loss=None, metric=None):
-        """
-        Compute the node representations and the graph representation(s).
-        Parameters:
-            graph (Graph): :math:`n` graph(s)
-            input (Tensor): input node representations
-            all_loss (Tensor, optional): if specified, add loss to this tensor
-            metric (dict, optional): if specified, output metrics to this dict
-        Returns:
-            dict with ``node_feature`` and ``graph_feature`` fields:
-                node representations of shape :math:`(|V|, d)`, graph representations of shape :math:`(n, d)`
-        """
-        # if not hasattr(graph, 'node_structural_feature'):
-        #     generate_node_structural_feature(graph, self.max_cycle)
-
-        hiddens = []
-        layer_input = self.linear(input)
-
-        for layer in self.layers:
-            hidden = layer(graph, layer_input)
-            if self.short_cut and hidden.shape == layer_input.shape:
-                hidden = hidden + layer_input
-            hiddens.append(hidden)
-            layer_input = hidden
-
-        if self.concat_hidden:
-            node_feature = torch.cat(hiddens, dim=-1)
-        else:
-            node_feature = hiddens[-1]
-        graph_feature = self.readout(graph, node_feature)
-
-        return {
-            'graph_feature': graph_feature,
-            'node_feature': node_feature
-        }
-    
-
 
 
 def all_combs_list(l_1, l_2):
@@ -204,6 +34,7 @@ def all_combs_list(l_1, l_2):
             all_combs.append((a,b))
    
     return all_combs
+
 
 
 class MLP(nn.Module):
@@ -571,7 +402,69 @@ def train_mlps_via_optuna(dataset,
     return (trained_best_model, loss_curve_training_set)
 
 
+
+class GIN(nn.Module):
+    """ 
+    GIN class with variable architecture, implemented in PyTorch Geometric. Optionally includes batchnorm and dropout.
+    """
+    
+    def __init__(self,
+                 n_conv_layers = 5,
+                 input_dim = 79,
+                 hidden_dim = 79,
+                 mlp_n_hidden_layers = 1,
+                 mlp_hidden_activation = nn.ReLU(), 
+                 mlp_output_activation = nn.ReLU(), 
+                 mlp_use_bias = True, 
+                 mlp_hidden_dropout_rate = 0, 
+                 mlp_hidden_batchnorm = True,
+                 eps = 0,
+                 train_eps = False,
+                 pooling_operation = global_add_pool):
+        
+        # inherit initialisation method from parent class
+        super(GIN, self).__init__()
+        
+        # define graph convolutional layers
+        self.layers = nn.ModuleList()
+        
+        for k in range(n_conv_layers):
             
+            if k == 0:
+                dim = input_dim
+            else:
+                dim = hidden_dim
+            
+            self.layers.append(GINConv(MLP(architecture = arch(dim, hidden_dim, hidden_dim, mlp_n_hidden_layers),
+                                           hidden_activation = mlp_hidden_activation,
+                                           output_activation = mlp_output_activation,
+                                           use_bias = mlp_use_bias,
+                                           hidden_dropout_rate = mlp_hidden_dropout_rate,
+                                           hidden_batchnorm = mlp_hidden_batchnorm),
+                                       eps = eps,
+                                       train_eps = train_eps))
+        
+        # define final pooling operation to reduce graph to vector
+        self.pool = pooling_operation
+
+        
+    def forward(self, 
+                data_batch):
+        
+        # extract graph data
+        (x, edge_index, batch) = (data_batch.x, data_batch.edge_index, data_batch.batch)
+        
+        # apply graph convolutional layers in forward pass to iteratively update node features
+        for layer in self.layers:
+            x = layer(x, edge_index)
+        
+        # apply pooling to reduce graph to vector
+        x = self.pool(x, batch)
+
+        return x
+    
+
+    
 def fit_pytorch_gnn_mlp_model(gnn_model,
                               mlp_model,
                               data_list_train,
@@ -726,7 +619,7 @@ def fit_pytorch_gnn_mlp_model(gnn_model,
 
 
 
-def train_gsn_mlps_via_optuna(data_list,
+def train_gnn_mlps_via_optuna(data_list,
                               optuna_options,
                               gin_hyperparameter_grid, 
                               mlp_hyperparameter_grid, 
@@ -797,7 +690,7 @@ def train_gsn_mlps_via_optuna(data_list,
         len_arch = len(trial.suggest_categorical("architecture", mlp_hyperparameter_grid["architecture"]))
         chosen_architecture = tuple([chosen_hidden_dim for _ in range(len_arch - 1)]) + (1,)
         
-        gnn_model = GSN(n_conv_layers = trial.suggest_categorical("n_conv_layers", gin_hyperparameter_grid["n_conv_layers"]),
+        gnn_model = GIN(n_conv_layers = trial.suggest_categorical("n_conv_layers", gin_hyperparameter_grid["n_conv_layers"]),
                         input_dim = trial.suggest_categorical("input_dim", gin_hyperparameter_grid["input_dim"]),
                         hidden_dim = chosen_hidden_dim,
                         mlp_n_hidden_layers = trial.suggest_categorical("mlp_n_hidden_layers", gin_hyperparameter_grid["mlp_n_hidden_layers"]),
@@ -883,7 +776,7 @@ def train_gsn_mlps_via_optuna(data_list,
         print("    {}: {}".format(key, value))
     
     # instantiate model with best hyperparameters
-    best_gnn_model = GSN(n_conv_layers = best_trial.params["n_conv_layers"],
+    best_gnn_model = GIN(n_conv_layers = best_trial.params["n_conv_layers"],
                          input_dim = best_trial.params["input_dim"],
                          hidden_dim = best_trial.params["hidden_dim"],
                          mlp_n_hidden_layers = best_trial.params["mlp_n_hidden_layers"],

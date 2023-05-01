@@ -225,7 +225,7 @@ def summarise_scores_from_cubic_scores_array(scores_array,
 
 
 
-def display_experimental_results(filepath,exp_name, decimals = 2):
+def display_experimental_results(filepath, decimals = 2):
     """
     Print out average experimental results over k-fold cross validation with m random seeds for a chosen QSAR model and data set.
     """
@@ -250,7 +250,7 @@ def display_experimental_results(filepath,exp_name, decimals = 2):
                                                 task_type = task_type)
         summarised_scores.index.name = scores
         
-        summarised_scores.to_csv('/vols/opig/users/raja/GDL-ActivityCliff-3D/results/'+exp_name+'/scoring_results.csv', mode='a')
+        summarised_scores.to_csv(filepath + 'scoring_results.csv', mode='a')
 
         print("\n \n")
 
