@@ -270,7 +270,7 @@ def create_pytorch_geometric_data_set_from_smiles_and_targets(x_smiles, y, gnn_t
             node_cycle_counts = scatter_add(node_in_cycles, cycle_lens, dim_size=max_cycle - MIN_CYCLE + 1)
             # with graph_nx.node():
             molecular_data.node_structural_feature = node_cycle_counts
-        breakpoint()
+        # breakpoint()
 
         # construct geometric data object and append to data list
         data_list.append(molecular_data)
