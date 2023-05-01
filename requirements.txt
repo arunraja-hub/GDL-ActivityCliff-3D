@@ -14,3 +14,5 @@ torchvision
 torchaudio
 torch_geometric
 e3fp
+torch-scatter -f https://data.pyg.org/whl/torch-2.0.0+${CUDA}.html
+networkx

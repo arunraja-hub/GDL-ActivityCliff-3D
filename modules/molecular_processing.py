@@ -1,10 +1,12 @@
 import numpy as np
 import torch
+import networkx as nx
 from rdkit import Chem
 from rdkit.Chem.rdmolops import GetAdjacencyMatrix
 from rdkit.ML.Descriptors.MoleculeDescriptors import MolecularDescriptorCalculator
 from statsmodels.distributions.empirical_distribution import ECDF as statsmodels_ecdf
 from torch_geometric.data import Data as GeometricData
+from torch_scatter import scatter_add
 from e3fp.fingerprint.fprint import Fingerprint
 from e3fp.pipeline import fprints_from_smiles
 
@@ -189,9 +191,25 @@ def get_bond_features(bond, use_stereochemistry = True):
 
     return np.array(bond_feature_vector)
 
+# from https://github.com/maxhodak/keras-molecules/pull/32/files
+def mol_to_nx(mol):
+    G = nx.Graph()
 
+    for atom in mol.GetAtoms():
+        G.add_node(atom.GetIdx(),
+                   atomic_num=atom.GetAtomicNum(),
+                   formal_charge=atom.GetFormalCharge(),
+                   chiral_tag=atom.GetChiralTag(),
+                   hybridization=atom.GetHybridization(),
+                   num_explicit_hs=atom.GetNumExplicitHs(),
+                   is_aromatic=atom.GetIsAromatic())
+    for bond in mol.GetBonds():
+        G.add_edge(bond.GetBeginAtomIdx(),
+                   bond.GetEndAtomIdx(),
+                   bond_type=bond.GetBondType())
+    return G
 
-def create_pytorch_geometric_data_set_from_smiles_and_targets(x_smiles, y):
+def create_pytorch_geometric_data_set_from_smiles_and_targets(x_smiles, y, gnn_type = "GIN"):
     """
     Takes a list of SMILES strings x_smiles with an associated list of labels y and creates a list of labelled PyTorch Geometric graph objects data_list as output.
     """
@@ -237,7 +255,24 @@ def create_pytorch_geometric_data_set_from_smiles_and_targets(x_smiles, y):
         # construct target tensor
         y_tensor = torch.tensor(np.array([y_val]), dtype = torch.float)
         
+        molecular_data = GeometricData(x = X, edge_index = E, edge_attr = EF, y = y_tensor)
+        
+        if gnn_type == "GSN":
+        # add GSN-v features
+            #hyperparams for cycle length
+            MIN_CYCLE = 3
+            max_cycle = 8
+            graph_nx = mol_to_nx(mol)
+            cycles = [cycle for cycle in nx.cycle_basis(graph_nx) if len(cycle) <= max_cycle]
+            cycle_lens = torch.tensor([len(cycle) for cycle in cycles]) - MIN_CYCLE
+            node_in_cycles = torch.tensor([[i in cycle for cycle in cycles] for i in range(len(graph_nx.nodes()))],
+                                        dtype=torch.int)
+            node_cycle_counts = scatter_add(node_in_cycles, cycle_lens, dim_size=max_cycle - MIN_CYCLE + 1)
+            # with graph_nx.node():
+            molecular_data.node_structural_feature = node_cycle_counts
+        breakpoint()
+
         # construct geometric data object and append to data list
-        data_list.append(GeometricData(x = X, edge_index = E, edge_attr = EF, y = y_tensor))
+        data_list.append(molecular_data)
 
     return data_list
