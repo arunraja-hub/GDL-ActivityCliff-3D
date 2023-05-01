@@ -361,7 +361,7 @@ if args.model == "mlp":
                                     m_reps = settings_dict["m_reps"], 
                                     len_y = settings_dict["n_molecules"])
 
-    X_pdv = np.load(datafolder_filepath +'/X_pdv')
+    X_pdv = np.load(datafolder_filepath +'/X_pdv.npy')
 
     # train and evaluate models
     for (m, k) in data_split_dictionary.keys():
