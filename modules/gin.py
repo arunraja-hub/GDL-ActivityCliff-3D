@@ -8,7 +8,7 @@ from torch_geometric.loader import DataLoader as GeometricDataLoader
 from optuna.trial import TrialState
 from .scoring import regression_scores, binary_classification_scores
 
-
+device = torch.device("cuda")
 
 def arch(input_dim = 200, output_dim = 1, hidden_width = 300, hidden_depth = 10):
     """
@@ -102,7 +102,7 @@ def fit_pytorch_mlp_model(model,
                           print_results_per_epochs = 1, 
                           optuna_trial = None, 
                           optuna_performance_metric = None, 
-                          device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')):
+                          device = torch.device('cuda')):
     """
     Training loop for PyTorch MLP model implemented in the MLP class above. Optionally includes weight decay and learning rate decay.
     """
@@ -248,7 +248,7 @@ def train_mlps_via_optuna(dataset,
                           optuna_options,
                           mlp_hyperparameter_grid, 
                           train_hyperparameter_grid,
-                          device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')):
+                          device = torch.device('cuda')):
     """
     Training loop for PyTorch MLP model implemented in the MLP class above. This training loop includes an inner hyperparameter optimisation loop implemented in Optuna. 
     
