@@ -459,6 +459,8 @@ class GIN(nn.Module):
         for layer in self.layers:
             x = layer(x, edge_index)
         
+        available_gpus = [torch.cuda.device(i) for i in range(torch.cuda.device_count())]
+        print('available_gpus',available_gpus)
         # apply pooling to reduce graph to vector
         x = self.pool(x, batch)
 
