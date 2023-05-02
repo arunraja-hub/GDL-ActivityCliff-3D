@@ -201,6 +201,7 @@ if args.model == "rf":
         print("Subexperiment ", (m,k), " completed. \n")
 
 if args.model == "knn":
+    filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
     # GNN + MLP: hyperparameter- and optuna settings
 
     settings_dict["optuna_options"] = {"h_iters": 20,
@@ -323,7 +324,7 @@ if args.model == "knn":
 if args.model == "mlp":
     # set directory for saving of experimental results
     settings_dict["method_name"] = "pdv_mlp"
-    filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+    filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
     
     # hyperparameter- and optuna options
     settings_dict["optuna_options"] = {"h_iters": 20,
