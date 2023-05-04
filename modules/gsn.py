@@ -184,10 +184,11 @@ class GSN(nn.Module, core.Configurable):
             node_feature = hiddens[-1]
         graph_feature = self.readout(graph, node_feature)
 
-        return {
-            'graph_feature': graph_feature,
-            'node_feature': node_feature
-        }
+        return graph_feature
+    # {
+    #         'graph_feature': graph_feature,
+    #         'node_feature': node_feature
+    #     }
     
 
 

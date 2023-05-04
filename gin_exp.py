@@ -68,9 +68,11 @@ settings_dict["method_name"] = args.model
 # create molecular graphs as list of geometric data objects
 graph_list = create_pytorch_geometric_data_set_from_smiles_and_targets(x_smiles, y, gnn_type="GIN")
 
+# set directory for saving of experimental results
+filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+
 if args.model == "rf":
-    # set directory for saving of experimental results
-    filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+    
 
     # GNN + MLP: hyperparameter- and optuna settings
 # "h_iters": 20
@@ -203,6 +205,7 @@ if args.model == "rf":
 if args.model == "knn":
     # GNN + MLP: hyperparameter- and optuna settings
 
+    # filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
     settings_dict["optuna_options"] = {"h_iters": 20,
                                     "frac_train": 0.8,
                                     "data_splitting_seed": 42,
@@ -322,8 +325,8 @@ if args.model == "knn":
 
 if args.model == "mlp":
     # set directory for saving of experimental results
-    settings_dict["method_name"] = "pdv_mlp"
-    filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+    # settings_dict["method_name"] = "gin_mlp"
+    # filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
     
     # hyperparameter- and optuna options
     settings_dict["optuna_options"] = {"h_iters": 20,

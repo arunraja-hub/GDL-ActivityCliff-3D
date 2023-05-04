@@ -68,9 +68,11 @@ settings_dict["method_name"] = args.model
 # create molecular graphs as list of geometric data objects
 graph_list = create_pytorch_geometric_data_set_from_smiles_and_targets(x_smiles, y, gnn_type="GSN")
 
+filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+
 if args.model == "rf":
     # set directory for saving of experimental results
-    filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+    # filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
 
     # GNN + MLP: hyperparameter- and optuna settings
 # "h_iters": 20
@@ -155,7 +157,7 @@ if args.model == "rf":
         # find best hyperparameters via optuna and train associated model on training set (GNN + MLP)
         (trained_best_gnn_model, 
         trained_best_mlp_model, 
-        loss_curve_training_set) = train_gin_mlps_via_optuna(graph_list_train,
+        loss_curve_training_set) = train_gsn_mlps_via_optuna(graph_list_train,
                                                             settings_dict["optuna_options"],
                                                             settings_dict["gin_hyperparameter_grid"], 
                                                             settings_dict["mlp_hyperparameter_grid"], 
@@ -201,7 +203,7 @@ if args.model == "rf":
         print("Subexperiment ", (m,k), " completed. \n")
 
 if args.model == "knn":
-    filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+    # filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
     # GNN + MLP: hyperparameter- and optuna settings
 
     settings_dict["optuna_options"] = {"h_iters": 20,
@@ -323,8 +325,8 @@ if args.model == "knn":
 
 if args.model == "mlp":
     # set directory for saving of experimental results
-    settings_dict["method_name"] = "pdv_mlp"
-    filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+    # settings_dict["method_name"] = "pdv_mlp"
+    # filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
     
     # hyperparameter- and optuna options
     settings_dict["optuna_options"] = {"h_iters": 20,
