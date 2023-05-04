@@ -1,0 +1,4 @@
+python e3fp_exp.py --dataset chembl_factor_xa --model rf --rad 0.5;python e3fp_exp.py --dataset chembl_factor_xa --model rf --rad 1.0;python e3fp_exp.py --dataset chembl_factor_xa --model rf --rad 1.5
+python e3fp_exp.py --dataset chembl_dopamine_d2 --model rf --rad 0.5;python e3fp_exp.py --dataset chembl_dopamine_d2 --model rf --rad 1.0;python e3fp_exp.py --dataset chembl_dopamine_d2 --model rf --rad 1.5
+python e3fp_exp.py --dataset chembl_factor_xa --model knn --rad 0.5;python e3fp_exp.py --dataset chembl_factor_xa --model knn --rad 1.0;python e3fp_exp.py --dataset chembl_factor_xa --model knn--rad 1.5
+python e3fp_exp.py --dataset chembl_dopamine_d2 --model knn --rad 0.5;python e3fp_exp.py --dataset chembl_dopamine_d2 --model knn --rad 1.0;python e3fp_exp.py --dataset chembl_dopamine_d2 --model knn --rad 1.5
