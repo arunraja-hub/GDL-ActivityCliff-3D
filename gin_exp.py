@@ -69,9 +69,10 @@ settings_dict["method_name"] = args.model
 graph_list = create_pytorch_geometric_data_set_from_smiles_and_targets(x_smiles, y, gnn_type="GIN")
 
 # set directory for saving of experimental results
-filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+# results_filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
 
 if args.model == "rf":
+    filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/"+"gin_rf"
     
 
     # GNN + MLP: hyperparameter- and optuna settings
@@ -204,6 +205,7 @@ if args.model == "rf":
 
 if args.model == "knn":
     # GNN + MLP: hyperparameter- and optuna settings
+    filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/"+"gin_knn"
 
     # filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
     settings_dict["optuna_options"] = {"h_iters": 20,
@@ -327,7 +329,7 @@ if args.model == "mlp":
     # set directory for saving of experimental results
     # settings_dict["method_name"] = "gin_mlp"
     # filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
-    
+    filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/"+"gin_mlp"
     # hyperparameter- and optuna options
     settings_dict["optuna_options"] = {"h_iters": 20,
                                     "frac_train": 0.8,
