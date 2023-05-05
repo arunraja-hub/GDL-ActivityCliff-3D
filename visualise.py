@@ -11,7 +11,7 @@ import argparse
 from modules import *
 
 # python visualise.py --target chembl_dopamine_d2 --task_x ac_test --metric_x MCC --task_y qsar_test --metric_y MAE
-
+# python visualise.py --target postera_sars_cov_2_mpro --task_x ac_test --metric_x MCC --task_y qsar_test --metric_y MAE
 parser = argparse.ArgumentParser()
 parser.add_argument('--target', type=str, help='Description of arg1')
 parser.add_argument('--task_x', type=str, help='Description of arg1')
