@@ -37,7 +37,9 @@ parser.add_argument('--model', type=str, help='Description of arg2')
 args = parser.parse_args()
 #rf,knn,gin
 
-datafolder_filepath = "data/"+args.dataset
+vols_path = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"
+
+datafolder_filepath = vols_path + "data/"+args.dataset
 
 settings_dict = load_dict(datafolder_filepath + "/settings_dict.txt")
 settings_dict["target_name"] = args.dataset
@@ -62,7 +64,7 @@ settings_dict["use_chirality"] = True
 # set directory for saving of experimental results
 # ecfp_rf
 settings_dict["method_name"] = args.model
-filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+# filepath = vols_path + "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
 
 
 # create dictionary that maps SMILES strings to ECFPs
@@ -86,12 +88,12 @@ else:
 if args.model == "rf":
     # set directory for saving of experimental results
     settings_dict["method_name"] = "ecfp_rf"
-    filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+    filepath = vols_path + "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
 
     # hyperparameter- and random search settings
 
     settings_dict["j_splits"] = 5
-    settings_dict["h_iters"] = 10
+    settings_dict["h_iters"] = 20
     settings_dict["random_search_scoring"] = "neg_mean_absolute_error"
     settings_dict["random_search_verbose"] = 1
     settings_dict["random_search_random_state"] = 42
@@ -154,7 +156,7 @@ if args.model == "rf":
 if args.model == "knn":
     # set directory for saving of experimental results
     settings_dict["method_name"] = "ecfp_knn"
-    filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+    filepath = vols_path + "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
 
     # hyperparameter- and random search settings
     settings_dict["j_splits"] = 5
@@ -214,7 +216,7 @@ if args.model == "knn":
 if args.model == "mlp":
     # set directory for saving of experimental results
     settings_dict["method_name"] = "ecfp_mlp"
-    filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+    filepath = vols_path + "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
 
     # hyperparameter- and optuna options
 
