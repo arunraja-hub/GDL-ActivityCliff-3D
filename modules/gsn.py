@@ -6,12 +6,12 @@ import optuna
 from torch.utils.data import DataLoader, TensorDataset
 from torch_geometric.nn import MessagePassing, GINConv, global_add_pool, global_max_pool, global_mean_pool
 from torch_geometric.loader import DataLoader as GeometricDataLoader
-from torch_scatter import scatter_add
+# from torch_scatter import scatter_add
 from torch.nn import Linear, Parameter
 from torch_geometric.nn import MessagePassing
 from torch_geometric.utils import add_self_loops, degree
 from torch.nn import functional as F
-from torchdrug import layers, core
+# from torchdrug import layers, core
 
 
 
@@ -100,7 +100,7 @@ class GSNLayer(MessagePassing):
             output = self.activation(output)
         return output
 
-class GSN(nn.Module, core.Configurable):
+class GSN(nn.Module):
     """
     Graph Substructure Network proposed in `Improving Graph Neural Network Expressivity
     via Subgraph Isomorphism Counting`_.

@@ -6,7 +6,7 @@ from rdkit.Chem.rdmolops import GetAdjacencyMatrix
 from rdkit.ML.Descriptors.MoleculeDescriptors import MolecularDescriptorCalculator
 from statsmodels.distributions.empirical_distribution import ECDF as statsmodels_ecdf
 from torch_geometric.data import Data as GeometricData
-from torch_scatter import scatter_add
+# from torch_scatter import scatter_add
 from e3fp.fingerprint.fprint import Fingerprint
 from e3fp.pipeline import fprints_from_smiles
 
@@ -267,7 +267,7 @@ def create_pytorch_geometric_data_set_from_smiles_and_targets(x_smiles, y, gnn_t
             cycle_lens = torch.tensor([len(cycle) for cycle in cycles]) - MIN_CYCLE
             node_in_cycles = torch.tensor([[i in cycle for cycle in cycles] for i in range(len(graph_nx.nodes()))],
                                         dtype=torch.int)
-            node_cycle_counts = scatter_add(node_in_cycles, cycle_lens, dim_size=max_cycle - MIN_CYCLE + 1)
+            node_cycle_counts = torch.scatter_add(node_in_cycles, cycle_lens, dim_size=max_cycle - MIN_CYCLE + 1)
             # with graph_nx.node():
             molecular_data.node_structural_feature = node_cycle_counts
         # breakpoint()
