@@ -39,7 +39,10 @@ args = parser.parse_args()
 #knn
 #gin
 
-datafolder_filepath = "data/"+args.dataset
+vols_path = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"
+
+
+datafolder_filepath = vols_path + "data/"+args.dataset
 
 settings_dict = load_dict(datafolder_filepath + "/settings_dict.txt")
 settings_dict["target_name"] = args.dataset
@@ -64,7 +67,7 @@ settings_dict["use_chirality"] = True
 # set directory for saving of experimental results
 # e3fp_rf
 settings_dict["method_name"] = args.dataset
-filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+# filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
 
 
 # create dictionary that maps SMILES strings to E3FPs
@@ -88,7 +91,7 @@ else:
 if args.model == "rf":
     # set directory for saving of experimental results
     settings_dict["method_name"] = "e3fp_rf"
-    filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+    filepath = vols_path + "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
 
     # hyperparameter- and random search settings
 
@@ -157,7 +160,7 @@ if args.model == "rf":
 if args.model == "knn":
     # set directory for saving of experimental results
     settings_dict["method_name"] = "e3fp_knn"
-    filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+    filepath = vols_path + "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
 
     # hyperparameter- and random search settings
     settings_dict["j_splits"] = 5
@@ -216,7 +219,7 @@ if args.model == "knn":
 if args.model == "mlp":
     # set directory for saving of experimental results
     settings_dict["method_name"] = "e3fp_mlp"
-    filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
+    filepath = vols_path + "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
 
     # hyperparameter- and optuna options
 
