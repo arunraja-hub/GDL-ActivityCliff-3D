@@ -44,9 +44,12 @@ def visualise_results(target,
     """
     
     # create lists and dictionaries with experimental keys
-    target_list = ["chembl_dopamine_d2", "chembl_factor_xa", "postera_sars_cov_2_mpro"]
-    mol_repr_list = ["e3fp","ecfp", "pdv", "gin"]
-    regr_type_list = ["rf", "knn", "mlp"]
+    target_list = ["postera_sars_cov_2_mpro"]
+    # ["chembl_dopamine_d2", "chembl_factor_xa",
+    mol_repr_list = ["ecfp"]
+    # , "pdv", "gin"] "e3fp","
+    regr_type_list = ["rf"]
+    # , "knn", "mlp"]
     task_list = ["qsar_train", 
                  "qsar_test", 
                  "ac_train", 
