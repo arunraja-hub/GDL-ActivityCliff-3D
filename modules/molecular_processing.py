@@ -274,6 +274,8 @@ def create_pytorch_geometric_data_set_from_smiles_and_targets(x_smiles, y, gnn_t
             # (Tensor input, name dim, Tensor index, Tensor src)
             node_cycle_counts = torch.zeros_like(node_in_cycles).scatter_add(max_cycle - MIN_CYCLE + 1, cycle_lens,node_in_cycles)
             print("node_cycle_counts",node_cycle_counts)
+
+            
             # with graph_nx.node():
             molecular_data.node_structural_feature = node_cycle_counts
         # breakpoint()
