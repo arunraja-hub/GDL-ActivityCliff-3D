@@ -358,6 +358,8 @@ def save_qsar_ac_pd_results(filepath, scores_dict):
 
     print(scores_dict)
 
+    # os.mkdir(filepath)
+
     np.save(filepath + "y_pred_array.npy", scores_dict["y_pred_array"])
 
     np.save(filepath + "scores_qsar_train.npy", scores_dict["qsar_train"])
