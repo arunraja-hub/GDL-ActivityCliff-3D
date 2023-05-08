@@ -76,10 +76,13 @@ class MLP(nn.Module):
                 self.layers.append(output_activation)
                 
     def forward(self, x):
+        print("x shape before forward in MLP", x.shape)
         
         # apply computational layers in forward pass
         for layer in self.layers:
             x = layer(x)
+
+        print("x shape after forward in MLP", x.shape)
         
         return x
 
@@ -463,6 +466,7 @@ class GIN(nn.Module):
         # print('available_gpus',available_gpus)
         # apply pooling to reduce graph to vector
         x = self.pool(x, batch)
+        print('x shape after forward in GSN',x.shape)
 
         return x
     
