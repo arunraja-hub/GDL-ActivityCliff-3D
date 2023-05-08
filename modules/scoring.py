@@ -30,7 +30,7 @@ def binary_classification_scores(y_true, y_pred_proba_pos, display_results = Fal
     if len(y_true) == 0:
         
         # collect scores
-        scores_array = np.array([float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), 0, 0, 0])
+        scores_array = np.array([float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), 0, 0, 0,[]])
         scores_array_2d = np.reshape(scores_array, (1, len(scores_array)))
         columns = ["AUROC", "Accuracy", "Balanced Accuracy", "F1-Score", "MCC", "Sensitivity", "Specificity", "Precision", "Negative Predictive Value", "Test Cases", "Negative Test Cases", "Positive Test Cases","c_matrix_list"]
         scores_df = pd.DataFrame(data = scores_array_2d, index = ["Scores:"], columns = columns)
@@ -124,9 +124,10 @@ def binary_classification_scores(y_true, y_pred_proba_pos, display_results = Fal
         # collect scores
         scores_array = np.array([roc_auc, accuracy, balanced_accuracy, f1, mcc, sensitivity, specificity, positive_predictive_value, negative_predictive_value, n_test_cases, n_test_cases_neg, n_test_cases_pos, c_matrix_list])
         scores_array_2d = np.reshape(scores_array, (1, len(scores_array)))
+        print('scores_array_2d',scores_array_2d.shape)
         columns = ["AUROC", "Accuracy", "Balanced Accuracy", "F1-Score", "MCC", "Sensitivity", "Specificity", "Precision", "Negative Predictive Value", "Test Cases", "Negative Test Cases", "Positive Test Cases", "c_matrix_list"]
         scores_df = pd.DataFrame(data = scores_array_2d, index = ["Scores:"], columns = columns)
-
+        print('scores_df',scores_df.shape)
         # display scores
         if display_results == True:
             print(scores_df)
