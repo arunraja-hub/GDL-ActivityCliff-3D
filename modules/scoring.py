@@ -32,7 +32,7 @@ def binary_classification_scores(y_true, y_pred_proba_pos, display_results = Fal
         # collect scores
         scores_array = np.array([float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), 0, 0, 0])
         scores_array_2d = np.reshape(scores_array, (1, len(scores_array)))
-        columns = ["AUROC", "Accuracy", "Balanced Accuracy", "F1-Score", "MCC", "Sensitivity", "Specificity", "Precision", "Negative Predictive Value", "Test Cases", "Negative Test Cases", "Positive Test Cases"]
+        columns = ["AUROC", "Accuracy", "Balanced Accuracy", "F1-Score", "MCC", "Sensitivity", "Specificity", "Precision", "Negative Predictive Value", "Test Cases", "Negative Test Cases", "Positive Test Cases","c_matrix_list"]
         scores_df = pd.DataFrame(data = scores_array_2d, index = ["Scores:"], columns = columns)
 
         # display scores
