@@ -1,5 +1,5 @@
 #!/bin/bash   
-#SBATCH -J gin                     # Job name
+#SBATCH -J e3fp                     # Job name
 #SBATCH --time=12:00:00                 # Walltime                                      
 #SBATCH --mem-per-cpu=16G             # memory/cpu (in MB) ### commented out              
 #SBATCH --ntasks=1                      # 1 tasks                                               
