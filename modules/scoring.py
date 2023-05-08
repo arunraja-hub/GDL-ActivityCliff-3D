@@ -258,7 +258,8 @@ def display_experimental_results(filepath, decimals = 2):
 
     
 
-def create_scores_dict(k_splits, m_reps, len_y, n_regr_metrics = 8, n_class_metrics = 12):
+def create_scores_dict(k_splits, m_reps, len_y, n_regr_metrics = 8, n_class_metrics = 13):
+                                                                                # 12
     """
     Create a dictionary to save the performance results for QSAR-, AC- and PD-prediction in a k-fold cross validation scheme repeated with m random seeds.
     """
