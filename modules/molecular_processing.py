@@ -273,7 +273,7 @@ def create_pytorch_geometric_data_set_from_smiles_and_targets(x_smiles, y, gnn_t
             print("max_cycle - MIN_CYCLE + 1",max_cycle - MIN_CYCLE + 1)
             # (Tensor input, name dim, Tensor index, Tensor src)
             # dim_size = max_cycle - MIN_CYCLE + 1
-            node_cycle_counts = torch.zeros_like(cycle_lens, dtype=cycle_lens.dtype).scatter_add(0, cycle_lens,node_in_cycles)
+            node_cycle_counts = torch.zeros_like(cycle_lens).scatter_add(0, cycle_lens,node_in_cycles)
             print("node_cycle_counts",node_cycle_counts)
 
             
