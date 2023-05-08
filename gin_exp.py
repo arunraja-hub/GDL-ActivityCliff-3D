@@ -124,7 +124,7 @@ if args.model == "rf":
 
     # RF: hyperparameter- and random search settings
     settings_dict["j_splits"] = 5
-    settings_dict["h_iters"] = 10
+    settings_dict["h_iters"] = 20
     settings_dict["random_search_scoring"] = "neg_mean_absolute_error"
     settings_dict["random_search_verbose"] = 1
     settings_dict["random_search_random_state"] = 42
@@ -250,7 +250,7 @@ if args.model == "knn":
     # kNN: hyperparameter- and random search settings
 
     settings_dict["j_splits"] = 5
-    settings_dict["h_iters"] = 10
+    settings_dict["h_iters"] = 20
     settings_dict["random_search_scoring"] = "neg_mean_absolute_error"
     settings_dict["random_search_verbose"] = 1
     settings_dict["random_search_random_state"] = 42
