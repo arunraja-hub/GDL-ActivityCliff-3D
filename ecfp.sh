@@ -24,32 +24,32 @@ source /vols/opig/users/raja/miniconda3/etc/profile.d/conda.sh
 #conda create --name gin_conda
 conda activate gin_conda
 #all proteins all rads- rf
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model rf --rad 0.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model rf --rad 1.0
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model rf --rad 1.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model rf --rad 0.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model rf --rad 1.0
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model rf --rad 1.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model rf --rad 0.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model rf --rad 1.0
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model rf --rad 1.5
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model rf 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model rf 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model rf 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model rf 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model rf 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model rf 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model rf 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model rf 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model rf 
 #all proteins all rads - knn
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model knn --rad 0.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model knn --rad 1.0
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model knn--rad 1.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model knn --rad 0.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model knn --rad 1.0
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model knn --rad 1.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model knn --rad 0.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model knn --rad 1.0
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model knn --rad 1.5
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model knn 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model knn 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model knn
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model knn 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model knn 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model knn 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model knn 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model knn 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model knn 
 #all proteins all rads - mlp
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model mlp --rad 0.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model mlp --rad 1.0
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model mlp--rad 1.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model mlp --rad 0.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model mlp --rad 1.0
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model mlp --rad 1.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model mlp --rad 0.5
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model mlp --rad 1.0
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model mlp --rad 1.5
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model mlp 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model mlp 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model mlp
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model mlp 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model mlp 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model mlp 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model mlp 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model mlp 
+python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model mlp 
