@@ -73,7 +73,7 @@ def binary_classification_scores(y_true, y_pred_proba_pos, display_results = Fal
             tp = y_pred.count(1)
             fp = 0
 
-        c_matrix_list = [tn,fn,tp,fp]
+        # c_matrix_list = [tn,fn,tp,fp]
         # compute scores
 
         # roc_auc
@@ -122,10 +122,10 @@ def binary_classification_scores(y_true, y_pred_proba_pos, display_results = Fal
             negative_predictive_value = float("NaN")
 
         # collect scores
-        scores_array = np.array([roc_auc, accuracy, balanced_accuracy, f1, mcc, sensitivity, specificity, positive_predictive_value, negative_predictive_value, n_test_cases, n_test_cases_neg, n_test_cases_pos, c_matrix_list])
+        scores_array = np.array([roc_auc, accuracy, balanced_accuracy, f1, mcc, sensitivity, specificity, positive_predictive_value, negative_predictive_value, n_test_cases, n_test_cases_neg, n_test_cases_pos, tn, fn, tp, fp])
         scores_array_2d = np.reshape(scores_array, (1, len(scores_array)))
         print('scores_array_2d',scores_array_2d.shape)
-        columns = ["AUROC", "Accuracy", "Balanced Accuracy", "F1-Score", "MCC", "Sensitivity", "Specificity", "Precision", "Negative Predictive Value", "Test Cases", "Negative Test Cases", "Positive Test Cases", "c_matrix_list"]
+        columns = ["AUROC", "Accuracy", "Balanced Accuracy", "F1-Score", "MCC", "Sensitivity", "Specificity", "Precision", "Negative Predictive Value", "Test Cases", "Negative Test Cases", "Positive Test Cases", "tn", "fn", "tp", "fp"]
         scores_df = pd.DataFrame(data = scores_array_2d, index = ["Scores:"], columns = columns)
         print('scores_df',scores_df.shape)
         # display scores
@@ -324,6 +324,7 @@ def create_and_store_qsar_ac_pd_results(scores_dict,
     scores_dict["qsar_train"][m,k] = regression_scores(y_train, y_pred[ind_train_mols]).values
     scores_dict["qsar_test"][m,k] = regression_scores(y_test, y_pred[ind_test_mols]).values
         
+    print('binary_classification_scores line 327',binary_classification_scores(y_mmps[ind_train_mmps], y_mmps_pred[ind_train_mmps]).values)
     scores_dict["ac_train"][m,k] = binary_classification_scores(y_mmps[ind_train_mmps], y_mmps_pred[ind_train_mmps]).values
     scores_dict["ac_inter"][m,k] = binary_classification_scores(y_mmps[ind_inter_mmps], y_mmps_hybrid[ind_inter_mmps]).values
     scores_dict["ac_test"][m,k] = binary_classification_scores(y_mmps[ind_test_mmps], y_mmps_pred[ind_test_mmps]).values
