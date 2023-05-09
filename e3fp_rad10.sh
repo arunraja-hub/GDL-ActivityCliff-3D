@@ -1,5 +1,5 @@
 #!/bin/bash   
-#SBATCH -J ecfp                     # Job name
+#SBATCH -J e3fp10                     # Job name
 #SBATCH --time=48:00:00                 # Walltime                                      
 #SBATCH --mem-per-cpu=16G             # memory/cpu (in MB) ### commented out              
 #SBATCH --ntasks=1                      # 1 tasks                                               
@@ -24,24 +24,15 @@ echo $CUDA_VISIBLE_DEVICES
 source /vols/opig/users/raja/miniconda3/etc/profile.d/conda.sh
 #conda create --name gin_conda
 conda activate gin_conda
-echo "all proteins ecfp- rf"
-echo" dataset chembl_dopamine_d2 --model rf "
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model rf 
-echo "chembl_factor_xa --model rf "
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model rf 
-echo "dataset postera_sars_cov_2_mpro --model rf "
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model rf 
-echo "all proteins ecfp - knn"
-echo"--dataset chembl_factor_xa --model knn "
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model knn 
-echo "dataset chembl_dopamine_d2 --model knn  "
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model knn  
-echo"--dataset postera_sars_cov_2_mpro --model knn "
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model knn  
-echo "all proteins ecfp - mlp"
-echo "--dataset chembl_factor_xa --model mlp "
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_factor_xa --model mlp 
-echo " --dataset chembl_dopamine_d2 --model mlp "
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset chembl_dopamine_d2 --model mlp 
-echo "--dataset postera_sars_cov_2_mpro --model mlp "s
-python GDL-ActivityCliff-3D/ecfp_exp.py --dataset postera_sars_cov_2_mpro --model mlp 
+echo "all proteins rad 1.0- rf"
+python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_dopamine_d2 --model rf --rad 1.0 
+python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_factor_xa --model rf --rad 1.0
+python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model rf --rad 1.0
+echo "all proteins rad 1.0 - knn"
+python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_factor_xa --model knn --rad 1.0
+python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_dopamine_d2 --model knn --rad 1.0
+python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model knn --rad 1.0
+echo "all proteins rad 1.0 - mlp"
+python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_factor_xa --model mlp --rad 1.0
+python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_dopamine_d2 --model mlp --rad 1.0
+python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model mlp --rad 1.0
