@@ -1,6 +1,6 @@
 #!/bin/bash   
 #SBATCH -J ecfp                     # Job name
-#SBATCH --time=12:00:00                 # Walltime                                      
+#SBATCH --time=48:00:00                 # Walltime                                      
 #SBATCH --mem-per-cpu=16G             # memory/cpu (in MB) ### commented out              
 #SBATCH --ntasks=1                      # 1 tasks                                               
 #SBATCH --cpus-per-task=1           # number of cores per task                          
@@ -14,6 +14,7 @@
 #SBATCH --mail-type=end                 # ... and ends
 #S BATCH --partition=nagagpu04-high-debug  # Select a specific partition rather than default 
 #SBATCH --clusters=all
+#SBATCH --partition=high-opig-test    # Select a specific partition rather than default
 #S BATCH -w nagagpu04.cpu.stats.ox.ac.uk # Provide a specific node/nodelist rather than the standard nodelist associated with the partition (useful if you have a data setup on one specific node)
 #SBATCH --output=/vols/opig/users/raja/slurm_outs/slurm_%j.out  # Writes standard output to this file. %j is jobnumber                             
 #SBATCH --error=/vols/opig/users/raja/slurm_outs/slurm_%j.err   # Writes error messages to this file. %j is jobnumber
