@@ -30,9 +30,9 @@ def binary_classification_scores(y_true, y_pred_proba_pos, display_results = Fal
     if len(y_true) == 0:
         
         # collect scores
-        scores_array = np.array([float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), 0, 0, 0,[]])
+        scores_array = np.array([float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), float("NaN"), 0, 0, 0, 0, 0, 0, 0])
         scores_array_2d = np.reshape(scores_array, (1, len(scores_array)))
-        columns = ["AUROC", "Accuracy", "Balanced Accuracy", "F1-Score", "MCC", "Sensitivity", "Specificity", "Precision", "Negative Predictive Value", "Test Cases", "Negative Test Cases", "Positive Test Cases","c_matrix_list"]
+        columns = ["AUROC", "Accuracy", "Balanced Accuracy", "F1-Score", "MCC", "Sensitivity", "Specificity", "Precision", "Negative Predictive Value", "Test Cases", "Negative Test Cases", "Positive Test Cases","tn", "fn", "tp", "fp"]
         scores_df = pd.DataFrame(data = scores_array_2d, index = ["Scores:"], columns = columns)
 
         # display scores
@@ -258,7 +258,7 @@ def display_experimental_results(filepath, decimals = 2):
 
     
 
-def create_scores_dict(k_splits, m_reps, len_y, n_regr_metrics = 8, n_class_metrics = 13):
+def create_scores_dict(k_splits, m_reps, len_y, n_regr_metrics = 8, n_class_metrics = 16):
                                                                                 # 12
     """
     Create a dictionary to save the performance results for QSAR-, AC- and PD-prediction in a k-fold cross validation scheme repeated with m random seeds.
