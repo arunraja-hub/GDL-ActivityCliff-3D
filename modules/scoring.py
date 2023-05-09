@@ -24,7 +24,7 @@ def transform_probs_to_labels(y_pred_proba_pos, cutoff_value = 0.5):
 
 def binary_classification_scores(y_true, y_pred_proba_pos, display_results = False):
     """
-    For a binary classification task with true labels y_true and predicted probabilities y_pred_proba_pos, this function computes the following metrics: "AUROC", "Accuracy", "Balanced Accuracy", "F1-Score", "MCC", "Sensitivity", "Specificity", "Precision", "Negative Predictive Value", "Test Cases", "Negative Test Cases", "Positive Test Cases".
+    For a binary classification task with true labels y_true and predicted probabilities y_pred_proba_pos, this function computes the following metrics: "AUROC", "Accuracy", "Balanced Accuracy", "F1-Score", "MCC", "Sensitivity", "Specificity", "Precision", "Negative Predictive Value", "Test Cases", "Negative Test Cases", "Positive Test Cases", ","tn", "fn", "tp", "fp".
     """
     
     if len(y_true) == 0:
@@ -216,7 +216,7 @@ def summarise_scores_from_cubic_scores_array(scores_array,
         columns = ["MAE", "MedAE", "RMSE", "MaxAE", "MSE", "Pearson's r", "R^2", "Test Cases"]
     elif task_type == "classification":
         columns = ["AUROC", "Accuracy", "Balanced Accuracy", "F1-Score", "MCC", "Sensitivity", "Specificity", 
-               "Precision", "Negative Predictive Value", "Test Cases", "Negative Test Cases", "Positive Test Cases"]
+               "Precision", "Negative Predictive Value", "Test Cases", "Negative Test Cases", "Positive Test Cases","tn", "fn", "tp", "fp"]
     
     summarised_scores_df = pd.DataFrame(data = summarised_scores_array, index = ["Avg.", "Std."], columns = columns)
 
