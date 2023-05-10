@@ -362,7 +362,9 @@ def save_qsar_ac_pd_results(filepath, scores_dict):
 
     print(scores_dict)
 
-    # os.mkdir(filepath)
+    isExist = os.path.exists(filepath)
+    if not isExist:
+        os.makedirs(filepath)
 
     np.save(filepath + "y_pred_array.npy", scores_dict["y_pred_array"])
 
