@@ -13,7 +13,7 @@
 #SBATCH --mail-type=begin               # Instead only email when job begins...
 #SBATCH --mail-type=end                 # ... and ends
 #S BATCH --partition=nagagpu04-high-debug  # Select a specific partition rather than default 
-#SBATCH --clusters=all
+#SBATCH --clusters=srf_gpu_01
 #SBATCH --partition=high-opig-test    # Select a specific partition rather than default
 #S BATCH -w nagagpu04.cpu.stats.ox.ac.uk # Provide a specific node/nodelist rather than the standard nodelist associated with the partition (useful if you have a data setup on one specific node)
 #SBATCH --output=/vols/opig/users/raja/slurm_outs/slurm_%j.out  # Writes standard output to this file. %j is jobnumber                             
@@ -24,15 +24,16 @@ echo $CUDA_VISIBLE_DEVICES
 source /vols/opig/users/raja/miniconda3/etc/profile.d/conda.sh
 #conda create --name gin_conda
 conda activate gin_conda
-# echo "all proteins rad 1.5- rf"
-# python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_dopamine_d2 --model rf --rad 1.5 
-# python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_factor_xa --model rf --rad 1.5
+echo "postera mlp"
+python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model mlp --rad 1.5
+echo "all proteins rad 1.5- rf"
+python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_dopamine_d2 --model rf --rad 1.5 
+python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_factor_xa --model rf --rad 1.5
 # python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model rf --rad 1.5
 echo "all proteins rad 1.5 - knn"
 python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_factor_xa --model knn --rad 1.5
 python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_dopamine_d2 --model knn --rad 1.5
-python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model knn --rad 1.5
+# python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model knn --rad 1.5
 echo "all proteins rad 1.5 - mlp"
 python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_factor_xa --model mlp --rad 1.5
 python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_dopamine_d2 --model mlp --rad 1.5
-python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model mlp --rad 1.5
