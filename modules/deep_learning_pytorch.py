@@ -76,10 +76,12 @@ class MLP(nn.Module):
                 self.layers.append(output_activation)
                 
     def forward(self, x):
+        print("x shape before forward", x.shape)
         
         # apply computational layers in forward pass
         for layer in self.layers:
             x = layer(x)
+            print("x shape in forward for loop", x.shape)
         
         return x
 
