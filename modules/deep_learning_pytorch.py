@@ -403,65 +403,65 @@ def train_mlps_via_optuna(dataset,
 
 
 
-class GIN(nn.Module):
-    """ 
-    GIN class with variable architecture, implemented in PyTorch Geometric. Optionally includes batchnorm and dropout.
-    """
+# class GIN(nn.Module):
+#     """ 
+#     GIN class with variable architecture, implemented in PyTorch Geometric. Optionally includes batchnorm and dropout.
+#     """
     
-    def __init__(self,
-                 n_conv_layers = 5,
-                 input_dim = 79,
-                 hidden_dim = 79,
-                 mlp_n_hidden_layers = 1,
-                 mlp_hidden_activation = nn.ReLU(), 
-                 mlp_output_activation = nn.ReLU(), 
-                 mlp_use_bias = True, 
-                 mlp_hidden_dropout_rate = 0, 
-                 mlp_hidden_batchnorm = True,
-                 eps = 0,
-                 train_eps = False,
-                 pooling_operation = global_add_pool):
+#     def __init__(self,
+#                  n_conv_layers = 5,
+#                  input_dim = 79,
+#                  hidden_dim = 79,
+#                  mlp_n_hidden_layers = 1,
+#                  mlp_hidden_activation = nn.ReLU(), 
+#                  mlp_output_activation = nn.ReLU(), 
+#                  mlp_use_bias = True, 
+#                  mlp_hidden_dropout_rate = 0, 
+#                  mlp_hidden_batchnorm = True,
+#                  eps = 0,
+#                  train_eps = False,
+#                  pooling_operation = global_add_pool):
         
-        # inherit initialisation method from parent class
-        super(GIN, self).__init__()
+#         # inherit initialisation method from parent class
+#         super(GIN, self).__init__()
         
-        # define graph convolutional layers
-        self.layers = nn.ModuleList()
+#         # define graph convolutional layers
+#         self.layers = nn.ModuleList()
         
-        for k in range(n_conv_layers):
+#         for k in range(n_conv_layers):
             
-            if k == 0:
-                dim = input_dim
-            else:
-                dim = hidden_dim
+#             if k == 0:
+#                 dim = input_dim
+#             else:
+#                 dim = hidden_dim
             
-            self.layers.append(GINConv(MLP(architecture = arch(dim, hidden_dim, hidden_dim, mlp_n_hidden_layers),
-                                           hidden_activation = mlp_hidden_activation,
-                                           output_activation = mlp_output_activation,
-                                           use_bias = mlp_use_bias,
-                                           hidden_dropout_rate = mlp_hidden_dropout_rate,
-                                           hidden_batchnorm = mlp_hidden_batchnorm),
-                                       eps = eps,
-                                       train_eps = train_eps))
+#             self.layers.append(GINConv(MLP(architecture = arch(dim, hidden_dim, hidden_dim, mlp_n_hidden_layers),
+#                                            hidden_activation = mlp_hidden_activation,
+#                                            output_activation = mlp_output_activation,
+#                                            use_bias = mlp_use_bias,
+#                                            hidden_dropout_rate = mlp_hidden_dropout_rate,
+#                                            hidden_batchnorm = mlp_hidden_batchnorm),
+#                                        eps = eps,
+#                                        train_eps = train_eps))
         
-        # define final pooling operation to reduce graph to vector
-        self.pool = pooling_operation
+#         # define final pooling operation to reduce graph to vector
+#         self.pool = pooling_operation
 
         
-    def forward(self, 
-                data_batch):
+#     def forward(self, 
+#                 data_batch):
         
-        # extract graph data
-        (x, edge_index, batch) = (data_batch.x, data_batch.edge_index, data_batch.batch)
+#         # extract graph data
+#         (x, edge_index, batch) = (data_batch.x, data_batch.edge_index, data_batch.batch)
         
-        # apply graph convolutional layers in forward pass to iteratively update node features
-        for layer in self.layers:
-            x = layer(x, edge_index)
+#         # apply graph convolutional layers in forward pass to iteratively update node features
+#         for layer in self.layers:
+#             x = layer(x, edge_index)
         
-        # apply pooling to reduce graph to vector
-        x = self.pool(x, batch)
+#         # apply pooling to reduce graph to vector
+#         x = self.pool(x, batch)
 
-        return x
+#         return x
     
 
     
