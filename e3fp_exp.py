@@ -77,8 +77,8 @@ if os.path.isfile(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl'):
     x_smiles_to_fp_dict = load_dict(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl')
     print('e3fp smiles loaded')
     for j in x_smiles_to_fp_dict.keys():
-        print(x_smiles_to_fp_dict[j])
-        x_smiles_to_fp_dict[j] = np.array(x_smiles_to_fp_dict[j][0].to_rdkit())
+        print(len(x_smiles_to_fp_dict[j]))
+        x_smiles_to_fp_dict[j] = np.array(x_smiles_to_fp_dict[j].to_rdkit())
         # [0].to_rdkit())
 
 else:
