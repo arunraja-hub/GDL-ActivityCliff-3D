@@ -77,7 +77,7 @@ class MLP(nn.Module):
                 
     def forward(self, x):
         print("x shape before forward", x.shape)
-        print("layers",layers)
+        print("layers",self.layers)
         
         # apply computational layers in forward pass
         for layer in self.layers:
