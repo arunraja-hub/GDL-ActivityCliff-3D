@@ -44,7 +44,8 @@ def visualise_results(target,
     """
     
     # create lists and dictionaries with experimental keys
-    target_list = ["postera_sars_cov_2_mpro","chembl_dopamine_d2", "chembl_factor_xa"]
+    target_list = ["postera_sars_cov_2_mpro"]
+    # ,"chembl_dopamine_d2", "chembl_factor_xa"]
     # ["chembl_dopamine_d2", "chembl_factor_xa",
     mol_repr_list = ["ecfp", "pdv", "gin","e3fp"]
     # , "pdv", "gin"] "e3fp","
@@ -136,10 +137,10 @@ def visualise_results(target,
 
     plt.figure(figsize=(size*(2/3), size*(2/3)))
 
-    mol_repr_colour_dict = {"ecfp" : "red", "pdv" : "blue", "gin" : "violet"}
+    mol_repr_colour_dict = {"ecfp" : "red", "pdv" : "blue", "gin" : "violet","e3fp" : "green"}
     regr_type_marker_dict = {"rf": "s", "knn": "d", "mlp": "o"}
     
-    mol_repr_name_dict = {"ecfp" : "ECFP", "pdv" : "MD", "gin" : "GIN"}
+    mol_repr_name_dict = {"ecfp" : "ECFP", "pdv" : "MD", "gin" : "GIN", "e3fp":"E3FP"}
     regr_type_name_dict = {"rf": "RF", "knn": "kNN", "mlp": "MLP"}
     
     sns.scatterplot(data = df,
