@@ -39,6 +39,8 @@ args = parser.parse_args()
 #knn
 #gin
 
+print(args)
+
 vols_path = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"
 
 
