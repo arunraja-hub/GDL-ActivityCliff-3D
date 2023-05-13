@@ -111,7 +111,7 @@ def e3fp_from_smiles(smiles_string, radius_multiplier):
 
     """Function to create E3FP from a SMILES string."""
     fprint_params = {'bits': 2**10, 'radius_multiplier': radius_multiplier, 'rdkit_invariants': True}
-    confgen_params = {'max_energy_diff': 20.0, 'first': 1}
+    confgen_params = {'max_energy_diff': 0, 'first': 0}
     #look into details of conformation generation of e3fp
 
     feature_list = fprints_from_smiles(smiles_string, "placeholder_name",  fprint_params=fprint_params,confgen_params=confgen_params, save=False)
