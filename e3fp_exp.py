@@ -313,7 +313,7 @@ now = datetime.now()
 settings_dict["datetime"] = now.strftime("%d/%m/%Y %H:%M:%S")
 save_experimental_settings(filepath, settings_dict)
 
-display_experimental_results(filepath, decimals = 4)
+display_experimental_results(filepath, decimals = 4, args=args.rad, repr = "e3fp")
     
                 
 

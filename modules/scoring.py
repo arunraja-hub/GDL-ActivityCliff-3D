@@ -227,7 +227,7 @@ def summarise_scores_from_cubic_scores_array(scores_array,
 
 
 
-def display_experimental_results(filepath, decimals = 2):
+def display_experimental_results(filepath, decimals = 2, args = None, repr = "non-e3fp"):
     """
     Print out average experimental results over k-fold cross validation with m random seeds for a chosen QSAR model and data set.
     """
@@ -251,8 +251,10 @@ def display_experimental_results(filepath, decimals = 2):
                                                 decimals = decimals, 
                                                 task_type = task_type)
         summarised_scores.index.name = scores
-        
-        summarised_scores.to_csv(filepath + 'scoring_results.csv', mode='a')
+        if repr = "e3fp":
+            summarised_scores.to_csv(filepath + 'scoring_results_rad'+args.rad+'.csv', mode='a')
+        else:
+            summarised_scores.to_csv(filepath + 'scoring_results.csv', mode='a')
 
         print("\n \n")
 
