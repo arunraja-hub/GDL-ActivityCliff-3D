@@ -24,15 +24,17 @@ echo $CUDA_VISIBLE_DEVICES
 source /vols/opig/users/raja/miniconda3/etc/profile.d/conda.sh
 #conda create --name gin_conda
 conda activate gin_conda
-echo "all proteins rad 0.5- rf"
-python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_dopamine_d2 --model rf --rad 0.5 
-python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_factor_xa --model rf --rad 0.5
-python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model rf --rad 0.5
-echo "all proteins rad 0.5 - knn"
-python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_factor_xa --model knn --rad 0.5
-python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_dopamine_d2 --model knn --rad 0.5
-python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model knn --rad 0.5
-echo "all proteins rad 0.5 - mlp"
-python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_factor_xa --model mlp --rad 0.5
-python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_dopamine_d2 --model mlp --rad 0.5
-python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model mlp --rad 0.5
+echo "dataset: $1";
+echo "model: $2";
+echo "rad: $3";
+python GDL-ActivityCliff-3D/e3fp_exp.py --dataset $1 --model $2 --rad $3 
+# python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_factor_xa --model rf --rad 0.5
+# python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model rf --rad 0.5
+# echo "all proteins rad 0.5 - knn"
+# python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_factor_xa --model knn --rad 0.5
+# python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_dopamine_d2 --model knn --rad 0.5
+# python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model knn --rad 0.5
+# echo "all proteins rad 0.5 - mlp"
+# python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_factor_xa --model mlp --rad 0.5
+# python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_dopamine_d2 --model mlp --rad 0.5
+# python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model mlp --rad 0.5
