@@ -114,7 +114,7 @@ def e3fp_from_smiles(smiles_string, radius_multiplier):
     """Function to create E3FP from a SMILES string."""
     mol = Chem.MolFromSmiles(smiles_string)
     fprint_params = {'bits': 2**10, 'radius_multiplier': radius_multiplier, 'rdkit_invariants': True}
-    return np.array(fprints_from_mol(mol, fprint_params={}, save=False)[0].to_rdkit())
+    return np.array(fprints_from_mol(mol, fprint_params=fprint_params, save=False)[0].to_rdkit())
     # confgen_params = {'max_energy_diff': 0, 'first': 0}
     #look into details of conformation generation of e3fp
 
