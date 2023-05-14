@@ -112,18 +112,19 @@ def circular_fps_from_smiles(smiles_string,
 def e3fp_from_smiles(smiles_string, radius_multiplier):
 
     """Function to create E3FP from a SMILES string."""
-    mol = Chem.MolFromSmiles(smiles_string)
-    print(mol)
+    # mol = Chem.MolFromSmiles(smiles_string)
+    # print(mol)
+    # # fprint_params = {'bits': 2**10, 'radius_multiplier': radius_multiplier, 'rdkit_invariants': True}
+    # fpdict = fprints_dict_from_mol(mol)
+    # print(fpdict)
+    # # return np.array(fp[5][0].to_rdkit())
     fprint_params = {'bits': 2**10, 'radius_multiplier': radius_multiplier, 'rdkit_invariants': True}
-    fpdict = fprints_dict_from_mol(mol)
-    print(fpdict)
-    # return np.array(fp[5][0].to_rdkit())
-    # confgen_params = {'max_energy_diff': 0, 'first': 0}
+    confgen_params = {'max_energy_diff': 0, 'first': 0}
     #look into details of conformation generation of e3fp
 
-    # feature_list = fprints_from_smiles(smiles_string, "placeholder_name",  fprint_params=fprint_params, save=False)
+    feature_list = fprints_from_smiles(smiles_string, "placeholder_name",  fprint_params=fprint_params,confgen_params=confgen_params, save=False)
     # confgen_params=confgen_params
-    # return np.array(feature_list[0].to_rdkit())
+    return np.array(feature_list[0].to_rdkit())
 
 def one_hot_encoding(x, permitted_list):
     """
