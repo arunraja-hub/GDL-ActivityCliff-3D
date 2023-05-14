@@ -9,6 +9,8 @@ from torch_geometric.data import Data as GeometricData
 # from torch_scatter import scatter_add
 from e3fp.fingerprint.fprint import Fingerprint
 from e3fp.pipeline import fprints_from_smiles
+from e3fp.fingerprint.generate import fp, fprints_dict_from_mol, fprints_from_mol
+
 
 
 def rdkit_mol_descriptors_from_smiles(smiles_string, descriptor_list = None):
