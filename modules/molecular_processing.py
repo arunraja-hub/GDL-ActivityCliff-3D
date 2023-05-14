@@ -113,6 +113,7 @@ def e3fp_from_smiles(smiles_string, radius_multiplier):
 
     """Function to create E3FP from a SMILES string."""
     mol = Chem.MolFromSmiles(smiles_string)
+    print(mol)
     fprint_params = {'bits': 2**10, 'radius_multiplier': radius_multiplier, 'rdkit_invariants': True}
     fpdict = fprints_dict_from_mol(mol)
     print(fpdict)
