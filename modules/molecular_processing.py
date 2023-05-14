@@ -8,8 +8,8 @@ from statsmodels.distributions.empirical_distribution import ECDF as statsmodels
 from torch_geometric.data import Data as GeometricData
 # from torch_scatter import scatter_add
 from e3fp.fingerprint.fprint import Fingerprint
-from e3fp.pipeline import fprints_from_smiles
-from e3fp.fingerprint.generate import fp, fprints_dict_from_mol, fprints_from_mol
+from e3fp.pipeline import fprints_from_smiles, fprints_from_mol
+from e3fp.fingerprint.generate import fp, fprints_dict_from_mol
 
 
 
