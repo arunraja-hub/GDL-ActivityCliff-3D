@@ -10,6 +10,16 @@ from .scoring import regression_scores, binary_classification_scores
 
 # device = torch.device("cuda")
 
+def arch(input_dim = 200, output_dim = 1, hidden_width = 300, hidden_depth = 10):
+    """
+    Returns a tuple of integers specifying the architecture of an MLP. For example (200, 100, 100, 100, 1) specifies an MLP with input dim = 200, three hidden layers with 100 neurons each, and output dim = 1.
+    """
+    
+    hidden_layer_list = [hidden_width for h in range(hidden_depth)]
+    arch = tuple([input_dim] + hidden_layer_list + [output_dim])
+    
+    return arch
+
 
 
 class MLP(nn.Module):
