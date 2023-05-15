@@ -439,7 +439,7 @@ def train_gcn_mlps_via_optuna(data_list,
         print("    {}: {}".format(key, value))
     
     # instantiate model with best hyperparameters
-    best_gnn_model = GCN()
+    best_gnn_model = GCN(trial)
     # n_conv_layers = best_trial.params["n_conv_layers"],
     #                      input_dim = best_trial.params["input_dim"],
     #                      hidden_dim = best_trial.params["hidden_dim"],
