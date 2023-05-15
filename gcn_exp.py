@@ -279,7 +279,7 @@ if args.model == "knn":
         # find best hyperparameters via optuna and train associated model on training set (GNN + MLP)
         (trained_best_gnn_model, 
         trained_best_mlp_model, 
-        loss_curve_training_set) = train_gnn_mlps_via_optuna(graph_list_train,
+        loss_curve_training_set) = train_gcn_mlps_via_optuna(graph_list_train,
                                                             settings_dict["optuna_options"],
                                                             settings_dict["gcn_hyperparameter_grid"], 
                                                             settings_dict["mlp_hyperparameter_grid"], 
