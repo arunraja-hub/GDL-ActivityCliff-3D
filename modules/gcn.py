@@ -85,7 +85,7 @@ class GCN(torch.nn.Module):
         self.BN_layers = nn.ModuleList()
         input_dim = self.num_features_xd
         for i, layer in enumerate(range(self.number_GNN_layers)):
-            out_dim_power = 2
+            out_dim_power = 0
             # self.trial.suggest_int(f"output_dim_power_{layer}", 0, 2, log=False)
             self.GNN_layers.append(GCNConv(input_dim, self.num_features_xd * 2 ** out_dim_power))
             self.BN_layers.append(nn.BatchNorm1d(self.num_features_xd * 2 ** out_dim_power))
