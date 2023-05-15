@@ -346,7 +346,7 @@ def train_gcn_mlps_via_optuna(data_list,
         # len_arch = len(trial.suggest_categorical("architecture", mlp_hyperparameter_grid["architecture"]))
         # chosen_architecture = tuple([chosen_hidden_dim for _ in range(len_arch - 1)]) + (1,)
         
-        gnn_model = GCN()
+        gnn_model = GCN(trial)
         # GCN(n_conv_layers = trial.suggest_categorical("n_conv_layers", gcn_hyperparameter_grid["n_conv_layers"]),
         #                 input_dim = trial.suggest_categorical("input_dim", gcn_hyperparameter_grid["input_dim"]),
         #                 hidden_dim = chosen_hidden_dim,
