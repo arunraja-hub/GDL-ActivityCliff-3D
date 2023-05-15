@@ -8,7 +8,55 @@ from torch_geometric.loader import DataLoader as GeometricDataLoader
 from optuna.trial import TrialState
 from .scoring import regression_scores, binary_classification_scores
 
+class MLP(nn.Module):
+    """
+    MLP class with variable architecture, implemented in PyTorch. Optionally includes batchnorm and dropout.
+    """
+    
+    def __init__(self, 
+                 architecture = (1, 10, 10, 1), 
+                 hidden_activation = nn.ReLU(), 
+                 output_activation = nn.Identity(), 
+                 use_bias = True, 
+                 hidden_dropout_rate = 0.0, 
+                 hidden_batchnorm = False):
+        
+        # inherit initialisation method from parent class
+        super(MLP, self).__init__()
+        
+        # define computational layers
+        self.layers = nn.ModuleList()
+        
+        for k in range(len(architecture)-1):
+            
+            # add batchnorm layer
+            if k > 0 and hidden_batchnorm == True:
+                self.layers.append(nn.BatchNorm1d(architecture[k]))
+            
+            # add dropout layer
+            if k > 0:
+                self.layers.append(nn.Dropout(p = hidden_dropout_rate))
+           
+            # add affine-linear transformation layer
+            self.layers.append(nn.Linear(architecture[k], architecture[k+1], bias = use_bias))
+            
+            # add nonlinear activation layer
+            if k < len(architecture) - 2:
+                self.layers.append(hidden_activation)
+            else:
+                self.layers.append(output_activation)
+                
+    def forward(self, x):
+        print("x shape before forward in MLP", x.shape)
+        
+        # apply computational layers in forward pass
+        for layer in self.layers:
+            x = layer(x)
 
+        print("x shape after forward in MLP", x.shape)
+        
+        return x
+        
 class GCN(nn.Module):
     """ 
     GCN class with variable architecture, implemented in PyTorch Geometric. Optionally includes batchnorm and dropout.
