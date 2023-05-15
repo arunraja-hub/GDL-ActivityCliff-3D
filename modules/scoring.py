@@ -252,7 +252,7 @@ def display_experimental_results(filepath, decimals = 2, args = None, repr = "no
                                                 task_type = task_type)
         summarised_scores.index.name = scores
         if repr == "e3fp":
-            summarised_scores.to_csv(filepath + 'scoring_results_rad'+args.rad+'.csv', mode='a')
+            summarised_scores.to_csv(filepath + 'scoring_results_rad'+args+'.csv', mode='a')
         else:
             summarised_scores.to_csv(filepath + 'scoring_results.csv', mode='a')
 
