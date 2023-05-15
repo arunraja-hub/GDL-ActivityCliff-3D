@@ -121,8 +121,8 @@ if args.model == "rf":
         (ind_train_mols, ind_test_mols) = data_split_dictionary[(m,k)][0:2]
         
         # generate training- and test data (for individual molecules)   
-        print(len(x_smiles))    
-        print(len(x_smiles_to_fp_dict))      
+        # print(len(x_smiles))    
+        # print(len(x_smiles_to_fp_dict))      
         X_fp_train = np.array([x_smiles_to_fp_dict[smiles] for smiles in x_smiles[ind_train_mols]])
         y_train = y[ind_train_mols]
         
