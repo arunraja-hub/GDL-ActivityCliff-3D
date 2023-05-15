@@ -27,11 +27,12 @@ class MLP(nn.Module):
     
     def __init__(self, 
                  input_dim = 79,
-                 ):
+                 n_output = 1):
         
         # inherit initialisation method from parent class
         super(MLP, self).__init__()
 
+        self.n_output = n_output
         self.out_dim_lin = 16
         self.fc1 = nn.Linear(input_dim, self.out_dim_lin)
         self.fc2 = nn.Linear(self.out_dim_lin, 1024)
