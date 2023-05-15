@@ -34,6 +34,7 @@ class MLP(nn.Module):
 
         self.n_output = n_output
         self.out_dim_lin = 16
+        self.relu = nn.ReLU()
         self.fc1 = nn.Linear(input_dim, self.out_dim_lin)
         self.fc2 = nn.Linear(self.out_dim_lin, 1024)
         self.fc3 = nn.Linear(1024, 512)
