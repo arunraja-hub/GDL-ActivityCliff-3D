@@ -71,7 +71,7 @@ class GCN(torch.nn.Module):
         # define the ranges for the hyper parameters
         self.number_GNN_layers = 2
         # self.trial.suggest_int("n_GNN_layers", 1, 10)
-        self.act = nnp.ReLU()
+        self.act = nn.ReLU()
         # self.trial.suggest_categorical("activation_functions", ["relu", "leaky_relu"])
         self.activation = activation_function_dict[self.act]
         # we also optimize the dropout rate for the connecting layers
