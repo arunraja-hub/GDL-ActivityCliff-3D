@@ -7,6 +7,7 @@ from torch_geometric.nn import GCNConv, global_add_pool, global_max_pool, global
 from torch_geometric.loader import DataLoader as GeometricDataLoader
 from optuna.trial import TrialState
 from .scoring import regression_scores, binary_classification_scores
+from .deep_learning_pytorch import *
 
 def arch(input_dim = 200, output_dim = 1, hidden_width = 300, hidden_depth = 10):
     """
@@ -18,88 +19,105 @@ def arch(input_dim = 200, output_dim = 1, hidden_width = 300, hidden_depth = 10)
     
     return arch
 
-
 class MLP(nn.Module):
     """
     MLP class with variable architecture, implemented in PyTorch. Optionally includes batchnorm and dropout.
     """
     
     def __init__(self, 
-                 architecture = (1, 10, 10, 1), 
-                 hidden_activation = nn.ReLU(), 
-                 output_activation = nn.Identity(), 
-                 use_bias = True, 
-                 hidden_dropout_rate = 0.0, 
-                 hidden_batchnorm = False):
+                 input_dim = 79,
+                 ):
         
         # inherit initialisation method from parent class
         super(MLP, self).__init__()
-        
-        # define computational layers
-        self.layers = nn.ModuleList()
-        
-        for k in range(len(architecture)-1):
-            
-            # add batchnorm layer
-            if k > 0 and hidden_batchnorm == True:
-                self.layers.append(nn.BatchNorm1d(architecture[k]))
-            
-            # add dropout layer
-            if k > 0:
-                self.layers.append(nn.Dropout(p = hidden_dropout_rate))
-           
-            # add affine-linear transformation layer
-            self.layers.append(nn.Linear(architecture[k], architecture[k+1], bias = use_bias))
-            
-            # add nonlinear activation layer
-            if k < len(architecture) - 2:
-                self.layers.append(hidden_activation)
-            else:
-                self.layers.append(output_activation)
+
+        self.out_dim_lin = 16
+        self.fc1 = nn.Linear(input_dim, self.out_dim_lin)
+        self.fc2 = nn.Linear(self.out_dim_lin, 1024)
+        self.fc3 = nn.Linear(1024, 512)
+        self.out = nn.Linear(512, self.n_output)
+        self.dropout_connect = 0.5
+        self.dropout_layer = nn.Dropout(self.dropout_connect)
                 
     def forward(self, x):
-        print("x shape before forward in MLP", x.shape)
-        
-        # apply computational layers in forward pass
-        for layer in self.layers:
-            x = layer(x)
+        # add some fully connected layers
+        x = self.fc1(x)
+        x = self.relu(x)
+        x = self.dropout_layer(x)
+        x = self.fc2(x)
+        x = self.relu(x)
+        x = self.dropout_layer(x)
+        x = self.fc3(x)
+        x = self.relu(x)
+        x = self.dropout_layer(x)
 
-        print("x shape after forward in MLP", x.shape)
+        out = self.out(x)
+        return x
+
+
+# GCN based model
+class GCN(torch.nn.Module):
+    def __init__(self, trial, n_output=1, num_features_xd=78):
+
+        super(GCN, self).__init__()
+
+        self.trial = trial
+        self.n_output = n_output
+        self.out_dim_lin = 16
+        # 2 ** self.trial.suggest_int("output_dim_power_linear", 4, 11)
+        self.relu = F.relu
+
+        # define the ranges for the hyper parameters
+        self.number_GNN_layers = 2
+        # self.trial.suggest_int("n_GNN_layers", 1, 10)
+        self.act = nnp.ReLU()
+        # self.trial.suggest_categorical("activation_functions", ["relu", "leaky_relu"])
+        self.activation = activation_function_dict[self.act]
+        # we also optimize the dropout rate for the connecting layers
+        
+
+        # SMILES graph branch
+        self.GNN_layers = nn.ModuleList()
+        self.BN_layers = nn.ModuleList()
+        input_dim = self.num_features_xd
+        for i, layer in enumerate(range(self.number_GNN_layers)):
+            out_dim_power = 2
+            # self.trial.suggest_int(f"output_dim_power_{layer}", 0, 2, log=False)
+            self.GNN_layers.append(GCNConv(input_dim, self.num_features_xd * 2 ** out_dim_power))
+            self.BN_layers.append(nn.BatchNorm1d(self.num_features_xd * 2 ** out_dim_power))
+            input_dim = self.num_features_xd * 2 ** out_dim_power
+
+        # self.fc1 = nn.Linear(input_dim, self.out_dim_lin)
+        # self.fc2 = nn.Linear(self.out_dim_lin, 1024)
+        # self.fc3 = nn.Linear(1024, 512)
+        # self.out = nn.Linear(512, self.n_output)
+
+    def forward(self, data):
+        # get graph input
+        x, edge_index, batch = data.x, data.edge_index, data.batch
+
+        for i, (layer, bn) in enumerate(zip(self.GNN_layers, self.BN_layers)):
+            x = layer(x, edge_index)
+            x = self.activation(x)
+            x = bn(x)
+
+        x = global_max_pool(x, batch)       # global max pooling
+
+        # # add some fully connected layers
+        # x = self.fc1(x)
+        # x = self.relu(x)
+        # x = self.dropout_layer(x)
+        # x = self.fc2(x)
+        # x = self.relu(x)
+        # x = self.dropout_layer(x)
+        # x = self.fc3(x)
+        # x = self.relu(x)
+        # x = self.dropout_layer(x)
+
+        # out = self.out(x)
         
         return x
 
-class GCN(nn.Module):
-    """ 
-    GCN class with variable architecture, implemented in PyTorch Geometric. Optionally includes batchnorm and dropout.
-    """
-    
-    def __init__(self,):
-        
-        # inherit initialisation method from parent class
-        super().__init__()
-        self.conv1 = GCNConv(dataset.num_node_features, 16)
-        self.conv2 = GCNConv(16, dataset.num_classes)
-        # slef.layers = [self.conv1, self.conv2]
-
-        
-    def forward(self, 
-                data_batch):
-        
-        # extract graph data
-        (x, edge_index, batch) = (data_batch.x, data_batch.edge_index, data_batch.batch)
-        
-        x = self.conv1(x, edge_index)
-        x = F.relu(x)
-        x = F.dropout(x, training=self.training)
-        x = self.conv2(x, edge_index)
-        
-        # # available_gpus = [torch.cuda.device(i) for i in range(torch.cuda.device_count())]
-        # # print('available_gpus',available_gpus)
-        # # apply pooling to reduce graph to vector
-        # x = self.pool(x, batch)
-        # print('x shape after forward in GSN',x.shape)
-
-        return x
     
 
     
@@ -324,29 +342,31 @@ def train_gcn_mlps_via_optuna(data_list,
     # define model construction function
     def define_model(trial):
         
-        chosen_hidden_dim = trial.suggest_categorical("hidden_dim", gcn_hyperparameter_grid["hidden_dim"])
-        len_arch = len(trial.suggest_categorical("architecture", mlp_hyperparameter_grid["architecture"]))
-        chosen_architecture = tuple([chosen_hidden_dim for _ in range(len_arch - 1)]) + (1,)
+        # chosen_hidden_dim = trial.suggest_categorical("hidden_dim", gcn_hyperparameter_grid["hidden_dim"])
+        # len_arch = len(trial.suggest_categorical("architecture", mlp_hyperparameter_grid["architecture"]))
+        # chosen_architecture = tuple([chosen_hidden_dim for _ in range(len_arch - 1)]) + (1,)
         
-        gnn_model = GCN(n_conv_layers = trial.suggest_categorical("n_conv_layers", gcn_hyperparameter_grid["n_conv_layers"]),
-                        input_dim = trial.suggest_categorical("input_dim", gcn_hyperparameter_grid["input_dim"]),
-                        hidden_dim = chosen_hidden_dim,
-                        mlp_n_hidden_layers = trial.suggest_categorical("mlp_n_hidden_layers", gcn_hyperparameter_grid["mlp_n_hidden_layers"]),
-                        mlp_hidden_activation = trial.suggest_categorical("mlp_hidden_activation", gcn_hyperparameter_grid["mlp_hidden_activation"]),
-                        mlp_output_activation = trial.suggest_categorical("mlp_output_activation", gcn_hyperparameter_grid["mlp_output_activation"]),
-                        mlp_use_bias = trial.suggest_categorical("mlp_use_bias", gcn_hyperparameter_grid["mlp_use_bias"]),
-                        mlp_hidden_dropout_rate = trial.suggest_categorical("mlp_hidden_dropout_rate", gcn_hyperparameter_grid["mlp_hidden_dropout_rate"]),
-                        mlp_hidden_batchnorm = trial.suggest_categorical("mlp_hidden_batchnorm", gcn_hyperparameter_grid["mlp_hidden_batchnorm"]),
-                        eps = trial.suggest_categorical("eps", gcn_hyperparameter_grid["eps"]),
-                        train_eps = trial.suggest_categorical("train_eps", gcn_hyperparameter_grid["train_eps"]),
-                        pooling_operation = trial.suggest_categorical("pooling_operation", gcn_hyperparameter_grid["pooling_operation"]))
+        gnn_model = GCN()
+        # GCN(n_conv_layers = trial.suggest_categorical("n_conv_layers", gcn_hyperparameter_grid["n_conv_layers"]),
+        #                 input_dim = trial.suggest_categorical("input_dim", gcn_hyperparameter_grid["input_dim"]),
+        #                 hidden_dim = chosen_hidden_dim,
+        #                 mlp_n_hidden_layers = trial.suggest_categorical("mlp_n_hidden_layers", gcn_hyperparameter_grid["mlp_n_hidden_layers"]),
+        #                 mlp_hidden_activation = trial.suggest_categorical("mlp_hidden_activation", gcn_hyperparameter_grid["mlp_hidden_activation"]),
+        #                 mlp_output_activation = trial.suggest_categorical("mlp_output_activation", gcn_hyperparameter_grid["mlp_output_activation"]),
+        #                 mlp_use_bias = trial.suggest_categorical("mlp_use_bias", gcn_hyperparameter_grid["mlp_use_bias"]),
+        #                 mlp_hidden_dropout_rate = trial.suggest_categorical("mlp_hidden_dropout_rate", gcn_hyperparameter_grid["mlp_hidden_dropout_rate"]),
+        #                 mlp_hidden_batchnorm = trial.suggest_categorical("mlp_hidden_batchnorm", gcn_hyperparameter_grid["mlp_hidden_batchnorm"]),
+        #                 eps = trial.suggest_categorical("eps", gcn_hyperparameter_grid["eps"]),
+        #                 train_eps = trial.suggest_categorical("train_eps", gcn_hyperparameter_grid["train_eps"]),
+        #                 pooling_operation = trial.suggest_categorical("pooling_operation", gcn_hyperparameter_grid["pooling_operation"]))
         
-        mlp_model = MLP(architecture = chosen_architecture, 
-                        hidden_activation = trial.suggest_categorical("hidden_activation", mlp_hyperparameter_grid["hidden_activation"]), 
-                        output_activation = trial.suggest_categorical("output_activation", mlp_hyperparameter_grid["output_activation"]), 
-                        use_bias = trial.suggest_categorical("use_bias", mlp_hyperparameter_grid["use_bias"]), 
-                        hidden_dropout_rate = trial.suggest_categorical("hidden_dropout_rate", mlp_hyperparameter_grid["hidden_dropout_rate"]), 
-                        hidden_batchnorm = trial.suggest_categorical("hidden_batchnorm", mlp_hyperparameter_grid["hidden_batchnorm"]))
+        mlp_model = MLP()
+        # architecture = chosen_architecture, 
+        #                 hidden_activation = trial.suggest_categorical("hidden_activation", mlp_hyperparameter_grid["hidden_activation"]), 
+        #                 output_activation = trial.suggest_categorical("output_activation", mlp_hyperparameter_grid["output_activation"]), 
+        #                 use_bias = trial.suggest_categorical("use_bias", mlp_hyperparameter_grid["use_bias"]), 
+        #                 hidden_dropout_rate = trial.suggest_categorical("hidden_dropout_rate", mlp_hyperparameter_grid["hidden_dropout_rate"]), 
+        #                 hidden_batchnorm = trial.suggest_categorical("hidden_batchnorm", mlp_hyperparameter_grid["hidden_batchnorm"]))
         
         return (gnn_model, mlp_model)
 
@@ -414,25 +434,27 @@ def train_gcn_mlps_via_optuna(data_list,
         print("    {}: {}".format(key, value))
     
     # instantiate model with best hyperparameters
-    best_gnn_model = GCN(n_conv_layers = best_trial.params["n_conv_layers"],
-                         input_dim = best_trial.params["input_dim"],
-                         hidden_dim = best_trial.params["hidden_dim"],
-                         mlp_n_hidden_layers = best_trial.params["mlp_n_hidden_layers"],
-                         mlp_hidden_activation = best_trial.params["mlp_hidden_activation"],
-                         mlp_output_activation = best_trial.params["mlp_output_activation"],
-                         mlp_use_bias = best_trial.params["mlp_use_bias"],
-                         mlp_hidden_dropout_rate = best_trial.params["mlp_hidden_dropout_rate"],
-                         mlp_hidden_batchnorm = best_trial.params["mlp_hidden_batchnorm"],
-                         eps = best_trial.params["eps"],
-                         train_eps = best_trial.params["train_eps"],
-                         pooling_operation = best_trial.params["pooling_operation"])
+    best_gnn_model = GCN()
+    # n_conv_layers = best_trial.params["n_conv_layers"],
+    #                      input_dim = best_trial.params["input_dim"],
+    #                      hidden_dim = best_trial.params["hidden_dim"],
+    #                      mlp_n_hidden_layers = best_trial.params["mlp_n_hidden_layers"],
+    #                      mlp_hidden_activation = best_trial.params["mlp_hidden_activation"],
+    #                      mlp_output_activation = best_trial.params["mlp_output_activation"],
+    #                      mlp_use_bias = best_trial.params["mlp_use_bias"],
+    #                      mlp_hidden_dropout_rate = best_trial.params["mlp_hidden_dropout_rate"],
+    #                      mlp_hidden_batchnorm = best_trial.params["mlp_hidden_batchnorm"],
+    #                      eps = best_trial.params["eps"],
+    #                      train_eps = best_trial.params["train_eps"],
+    #                      pooling_operation = best_trial.params["pooling_operation"])
     
-    best_mlp_model = MLP(architecture = tuple([best_trial.params["hidden_dim"] for _ in range(len(best_trial.params["architecture"]) - 1)]) + (1,),
-                         hidden_activation = best_trial.params["hidden_activation"],
-                         output_activation = best_trial.params["output_activation"],
-                         use_bias = best_trial.params["use_bias"],
-                         hidden_dropout_rate = best_trial.params["hidden_dropout_rate"],
-                         hidden_batchnorm = best_trial.params["hidden_batchnorm"])
+    best_mlp_model = MLP()
+    # architecture = tuple([best_trial.params["hidden_dim"] for _ in range(len(best_trial.params["architecture"]) - 1)]) + (1,),
+    #                      hidden_activation = best_trial.params["hidden_activation"],
+    #                      output_activation = best_trial.params["output_activation"],
+    #                      use_bias = best_trial.params["use_bias"],
+    #                      hidden_dropout_rate = best_trial.params["hidden_dropout_rate"],
+    #                      hidden_batchnorm = best_trial.params["hidden_batchnorm"])
 
     # train model with best hyperparameters on whole dataset
     (trained_best_gnn_model,
