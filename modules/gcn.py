@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import optuna
 from torch.utils.data import DataLoader, TensorDataset
 from torch_geometric.nn import GCNConv, global_add_pool, global_max_pool, global_mean_pool
