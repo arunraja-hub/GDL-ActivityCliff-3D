@@ -122,7 +122,7 @@ class GIN(nn.Module):
         
         # extract graph data
         (x, edge_index, batch) = (data_batch.x, data_batch.edge_index, data_batch.batch)
-        
+        print('x shape before forward in GIN',x.shape)
         # apply graph convolutional layers in forward pass to iteratively update node features
         for layer in self.layers:
             x = layer(x, edge_index)
@@ -131,7 +131,7 @@ class GIN(nn.Module):
         # print('available_gpus',available_gpus)
         # apply pooling to reduce graph to vector
         x = self.pool(x, batch)
-        print('x shape after forward in GSN',x.shape)
+        print('x shape after forward in GIN',x.shape)
 
         return x
     

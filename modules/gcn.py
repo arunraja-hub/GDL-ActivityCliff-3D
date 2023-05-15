@@ -73,44 +73,13 @@ class GCN(nn.Module):
     GCN class with variable architecture, implemented in PyTorch Geometric. Optionally includes batchnorm and dropout.
     """
     
-    def __init__(self,
-                 n_conv_layers = 5,
-                 input_dim = 79,
-                 hidden_dim = 79,
-                 mlp_n_hidden_layers = 1,
-                 mlp_hidden_activation = nn.ReLU(), 
-                 mlp_output_activation = nn.ReLU(), 
-                 mlp_use_bias = True, 
-                 mlp_hidden_dropout_rate = 0, 
-                 mlp_hidden_batchnorm = True,
-                 eps = 0,
-                 train_eps = False,
-                 pooling_operation = global_add_pool):
+    def __init__(self,):
         
         # inherit initialisation method from parent class
-        super(GCN, self).__init__()
-        
-        # define graph convolutional layers
-        self.layers = nn.ModuleList()
-        
-        for k in range(n_conv_layers):
-            
-            if k == 0:
-                dim = input_dim
-            else:
-                dim = hidden_dim
-            
-            self.layers.append(GCNConv(MLP(architecture = arch(dim, hidden_dim, hidden_dim, mlp_n_hidden_layers),
-                                           hidden_activation = mlp_hidden_activation,
-                                           output_activation = mlp_output_activation,
-                                           use_bias = mlp_use_bias,
-                                           hidden_dropout_rate = mlp_hidden_dropout_rate,
-                                           hidden_batchnorm = mlp_hidden_batchnorm),
-                                       eps = eps,
-                                       train_eps = train_eps))
-        
-        # define final pooling operation to reduce graph to vector
-        self.pool = pooling_operation
+        super().__init__()
+        self.conv1 = GCNConv(dataset.num_node_features, 16)
+        self.conv2 = GCNConv(16, dataset.num_classes)
+        # slef.layers = [self.conv1, self.conv2]
 
         
     def forward(self, 
@@ -119,15 +88,16 @@ class GCN(nn.Module):
         # extract graph data
         (x, edge_index, batch) = (data_batch.x, data_batch.edge_index, data_batch.batch)
         
-        # apply graph convolutional layers in forward pass to iteratively update node features
-        for layer in self.layers:
-            x = layer(x, edge_index)
+        x = self.conv1(x, edge_index)
+        x = F.relu(x)
+        x = F.dropout(x, training=self.training)
+        x = self.conv2(x, edge_index)
         
-        # available_gpus = [torch.cuda.device(i) for i in range(torch.cuda.device_count())]
-        # print('available_gpus',available_gpus)
-        # apply pooling to reduce graph to vector
-        x = self.pool(x, batch)
-        print('x shape after forward in GSN',x.shape)
+        # # available_gpus = [torch.cuda.device(i) for i in range(torch.cuda.device_count())]
+        # # print('available_gpus',available_gpus)
+        # # apply pooling to reduce graph to vector
+        # x = self.pool(x, batch)
+        # print('x shape after forward in GSN',x.shape)
 
         return x
     
