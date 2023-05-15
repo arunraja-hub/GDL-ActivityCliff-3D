@@ -75,7 +75,7 @@ settings_dict["method_name"] = args.dataset
 # create dictionary that maps SMILES strings to E3FPs
 x_smiles_to_fp_dict = {}
 
-if os.path.isfile(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl'):
+if os.path.isfile(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl') and len(x_smiles) == len(x_smiles_to_fp_dict):
     x_smiles_to_fp_dict = load_dict(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl')
     print('e3fp smiles loaded')
     for j in x_smiles_to_fp_dict.keys():
@@ -87,9 +87,10 @@ if os.path.isfile(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl'):
 else:
     print('generating e3fp smiles for radius multiplier =', args.rad)
     for smiles in x_smiles:
-        x_smiles_to_fp_dict.update({smiles : e3fp_from_smiles(smiles, float(args.rad))})
-        with open(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl', 'wb') as f:
-            pickle.dump(x_smiles_to_fp_dict,f)
+        if smiles not in x_smiles_to_fp_dict:
+            x_smiles_to_fp_dict.update({smiles : e3fp_from_smiles(smiles, float(args.rad))})
+            with open(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl', 'wb') as f:
+                pickle.dump(x_smiles_to_fp_dict,f)
         # break
     print('DONE---generating e3fp smiles for radius multiplier =', args.rad)
 
