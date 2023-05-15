@@ -64,6 +64,7 @@ class GCN(torch.nn.Module):
 
         self.trial = trial
         self.n_output = n_output
+        self.num_features_xd = num_features_xd
         self.out_dim_lin = 16
         # 2 ** self.trial.suggest_int("output_dim_power_linear", 4, 11)
         self.relu = F.relu
