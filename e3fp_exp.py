@@ -90,7 +90,7 @@ else:
         x_smiles_to_fp_dict.update({smiles : e3fp_from_smiles(smiles, float(args.rad))})
         with open(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl', 'wb') as f:
             pickle.dump(x_smiles_to_fp_dict,f)
-            break()
+        break()
     print('DONE---generating e3fp smiles for radius multiplier =', args.rad)
 
 if args.model == "rf":
