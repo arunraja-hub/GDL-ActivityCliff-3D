@@ -329,7 +329,7 @@ if args.model == "mlp":
     # set directory for saving of experimental results
     # settings_dict["method_name"] = "gin_mlp"
     # filepath = "results/" + settings_dict["target_name"] + "/" + settings_dict["method_name"] + "/"
-    filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/"+settings_dict["target_name"] + "/"+"gin_mlp/"
+    filepath = "/vols/opig/users/raja/GDL-ActivityCliff-3D/"+"results/"+settings_dict["target_name"] + "/"+"gcn_mlp/"
     # hyperparameter- and optuna options
     settings_dict["optuna_options"] = {"h_iters": 20,
                                     "frac_train": 0.8,

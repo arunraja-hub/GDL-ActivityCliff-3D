@@ -59,7 +59,7 @@ class MLP(nn.Module):
 
 # GCN based model
 class GCN(torch.nn.Module):
-    def __init__(self, trial, n_output=1, num_features_xd=78):
+    def __init__(self, trial, n_output=1, num_features_xd=79):
 
         super(GCN, self).__init__()
 
