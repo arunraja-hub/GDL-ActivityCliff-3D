@@ -1,4 +1,5 @@
-#!/bin/bash   
+#!/bin/bash  
+sbatch <<EOT
 #SBATCH -J $4                     # Job name
 #SBATCH --time=48:00:00                 # Walltime                                      
 #SBATCH --mem-per-cpu=16G             # memory/cpu (in MB) ### commented out              
@@ -28,6 +29,7 @@ echo "dataset: $1";
 echo "model: $2";
 echo "rad: $3";
 python GDL-ActivityCliff-3D/e3fp_exp.py --dataset $1 --model $2 --rad $3 > GDL-ActivityCliff-3D/terminal_output/$4.txt
+EOT
 # python GDL-ActivityCliff-3D/e3fp_exp.py --dataset chembl_factor_xa --model rf --rad 0.5
 # python GDL-ActivityCliff-3D/e3fp_exp.py --dataset postera_sars_cov_2_mpro --model rf --rad 0.5
 # echo "all proteins rad 0.5 - knn"
