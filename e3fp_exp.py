@@ -75,14 +75,17 @@ settings_dict["method_name"] = args.dataset
 # create dictionary that maps SMILES strings to E3FPs
 x_smiles_to_fp_dict = {}
 
-if os.path.isfile(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl') and len(x_smiles) == len(x_smiles_to_fp_dict):
+
+
+if os.path.isfile(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl'):
     x_smiles_to_fp_dict = load_dict(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl')
-    print('e3fp smiles loaded')
-    for j in x_smiles_to_fp_dict.keys():
-        # print(len(x_smiles_to_fp_dict[j]))
-        x_smiles_to_fp_dict[j] = x_smiles_to_fp_dict[j]
-        # np.array(x_smiles_to_fp_dict[j].to_rdkit())
-        # [0].to_rdkit())
+    if len(x_smiles) == len(x_smiles_to_fp_dict):
+        print('e3fp smiles loaded')
+        for j in x_smiles_to_fp_dict.keys():
+            # print(len(x_smiles_to_fp_dict[j]))
+            x_smiles_to_fp_dict[j] = x_smiles_to_fp_dict[j]
+            # np.array(x_smiles_to_fp_dict[j].to_rdkit())
+            # [0].to_rdkit())
 
 else:
     print('generating e3fp smiles for radius multiplier =', args.rad)
