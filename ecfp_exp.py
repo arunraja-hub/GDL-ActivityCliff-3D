@@ -57,7 +57,7 @@ data_split_dictionary = load_dict(datafolder_filepath + '/data_split_dictionary.
 
 # set ECFP hyperparameters
 settings_dict["radius"] = 2
-settings_dict["bitstring_length"] = 2**11
+settings_dict["bitstring_length"] = 2**10
 settings_dict["use_features"] = False
 settings_dict["use_chirality"] = True
 
