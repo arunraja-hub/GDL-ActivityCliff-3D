@@ -79,6 +79,7 @@ x_smiles_to_fp_dict = {}
 
 if os.path.isfile(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl'):
     x_smiles_to_fp_dict = load_dict(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl')
+    print("len of x_smiles_to_fp_dict", len(x_smiles_to_fp_dict))
     if len(x_smiles) == len(x_smiles_to_fp_dict):
         print('e3fp smiles loaded')
         for j in x_smiles_to_fp_dict.keys():
