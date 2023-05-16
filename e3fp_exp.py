@@ -85,19 +85,20 @@ else:
 
 if len(x_smiles) == len(x_smiles_to_fp_dict):
     print('e3fp smiles loaded')
-    for j in x_smiles_to_fp_dict.keys():
-        # print(len(x_smiles_to_fp_dict[j]))
-        x_smiles_to_fp_dict[j] = x_smiles_to_fp_dict[j]
+    # for j in x_smiles_to_fp_dict.keys():
+    #     # print(len(x_smiles_to_fp_dict[j]))
+    #     x_smiles_to_fp_dict[j] = x_smiles_to_fp_dict[j]
         # np.array(x_smiles_to_fp_dict[j].to_rdkit())
         # [0].to_rdkit())
 
 else:
-    print('generating e3fp smiles for radius multiplier =', args.rad)
-    for smiles in x_smiles:
-        if smiles not in x_smiles_to_fp_dict:
-            x_smiles_to_fp_dict.update({smiles : e3fp_from_smiles(smiles, float(args.rad))})
-            with open(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl', 'wb') as f:
-                pickle.dump(x_smiles_to_fp_dict,f)
+    print("len(x_smiles) == len(x_smiles_to_fp_dict)",len(x_smiles), len(x_smiles_to_fp_dict))
+    # print('generating e3fp smiles for radius multiplier =', args.rad)
+    # for smiles in x_smiles:
+    #     if smiles not in x_smiles_to_fp_dict:
+    #         x_smiles_to_fp_dict.update({smiles : e3fp_from_smiles(smiles, float(args.rad))})
+    #         with open(datafolder_filepath +'/rad'+args.rad+'_smiles_e3fp_dict.pkl', 'wb') as f:
+    #             pickle.dump(x_smiles_to_fp_dict,f)
         # break
     print('DONE---generating e3fp smiles for radius multiplier =', args.rad)
 
