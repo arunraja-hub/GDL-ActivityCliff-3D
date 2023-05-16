@@ -18,15 +18,10 @@
 #SBATCH --output=/vols/opig/users/raja/slurm_outs/slurm_%j.out  # Writes standard output to this file. %j is jobnumber                             
 #SBATCH --error=/vols/opig/users/raja/slurm_outs/slurm_%j.err   # Writes error messages to this file. %j is jobnumber
 echo $CUDA_VISIBLE_DEVICES 
-#python -m venv gin7
-#source gin7/bin/activate
 source /vols/opig/users/raja/miniconda3/etc/profile.d/conda.sh
-#conda create --name gin_conda
 conda activate gin_conda
 echo "dataset: $1";
 echo "model: $2";
-#pip3 install  pandas torch torchvision torchaudio matplotlib numpy rdkit scikit_learn scipy seaborn spektral statsmodels tensorflow torch_geometric e3fp networkx optuna --cache-dir /vols/opig/users/raja/cache
-# -t /vols/opig/users/raja
 python GDL-ActivityCliff-3D/gcn_exp.py --dataset $1 --model $2 >> GDL-ActivityCliff-3D/terminal_output/gcn_$1_$2.txt
 #python GDL-ActivityCliff-3D/gin_exp.py --dataset postera_sars_cov_2_mpro --model rf >> GDL-ActivityCliff-3D/terminal_output/gin_rf.txt
 #python GDL-ActivityCliff-3D/gin_exp.py --dataset postera_sars_cov_2_mpro --model knn >> GDL-ActivityCliff-3D/terminal_output/gin_knn2.txt
