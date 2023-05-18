@@ -364,7 +364,7 @@ def delete_all_files_in_folder(filepath):
         
 def save_qsar_ac_pd_results(filepath, scores_dict, rad):
     
-    delete_all_files_in_folder(filepath)
+    # delete_all_files_in_folder(filepath)
 
     np.save(filepath + "y_pred_array_rad"+rad+".npy", scores_dict["y_pred_array"])
 
