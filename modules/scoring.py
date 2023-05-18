@@ -227,7 +227,7 @@ def summarise_scores_from_cubic_scores_array(scores_array,
 
 
 
-def display_experimental_results(filepath, decimals = 2, args = None, repr = "non-e3fp"):
+def display_experimental_results(filepath, decimals = 2, rad = None, repr = "non-e3fp"):
     """
     Print out average experimental results over k-fold cross validation with m random seeds for a chosen QSAR model and data set.
     """
@@ -245,15 +245,22 @@ def display_experimental_results(filepath, decimals = 2, args = None, repr = "no
         else:
             task_type = "classification"
 
-        
-        summarised_scores = summarise_scores_from_cubic_scores_array(np.load(filepath + scores + ".npy"), 
-                                                display_results = True, 
-                                                decimals = decimals, 
-                                                task_type = task_type)
-        summarised_scores.index.name = scores
         if repr == "e3fp":
-            summarised_scores.to_csv(filepath + 'scoring_results_rad'+args+'.csv', mode='a')
+            summarised_scores = summarise_scores_from_cubic_scores_array(np.load(filepath + scores + "_rad" +rad+ ".npy"), 
+                                                    display_results = True, 
+                                                    decimals = decimals, 
+                                                    task_type = task_type)
+            summarised_scores.index.name = scores
+            
+            summarised_scores.to_csv(filepath + 'scoring_results_e3fp_rad'+rad+'.csv', mode='a')
+
         else:
+            summarised_scores = summarise_scores_from_cubic_scores_array(np.load(filepath + scores + ".npy"), 
+                                                    display_results = True, 
+                                                    decimals = decimals, 
+                                                    task_type = task_type)
+            summarised_scores.index.name = scores
+            
             summarised_scores.to_csv(filepath + 'scoring_results.csv', mode='a')
 
         print("\n \n")
@@ -355,39 +362,29 @@ def delete_all_files_in_folder(filepath):
 
     
         
-def save_qsar_ac_pd_results(filepath, scores_dict):
-    """
-    Save cubic arrays of shape (m, k, n_metrics) that contain the performance results over a k-fold cross validation scheme with m random seends.
-    """
+def save_qsar_ac_pd_results(filepath, scores_dict, rad):
     
     delete_all_files_in_folder(filepath)
 
-    print(scores_dict)
+    np.save(filepath + "y_pred_array_rad"+rad+".npy", scores_dict["y_pred_array"])
 
-    isExist = os.path.exists(filepath)
-    if not isExist:
-        os.makedirs(filepath)
+    np.save(filepath + "scores_qsar_train_rad"+rad+".npy", scores_dict["qsar_train"])
+    np.save(filepath + "scores_qsar_test_rad"+rad+".npy", scores_dict["qsar_test"])
 
-    np.save(filepath + "y_pred_array.npy", scores_dict["y_pred_array"])
+    np.save(filepath + "scores_ac_train_rad"+rad+".npy", scores_dict["ac_train"])
+    np.save(filepath + "scores_ac_inter_rad"+rad+".npy", scores_dict["ac_inter"])
+    np.save(filepath + "scores_ac_test_rad"+rad+".npy", scores_dict["ac_test"])
+    np.save(filepath + "scores_ac_cores_rad"+rad+".npy", scores_dict["ac_cores"])
 
-    np.save(filepath + "scores_qsar_train.npy", scores_dict["qsar_train"])
-    np.save(filepath + "scores_qsar_test.npy", scores_dict["qsar_test"])
+    np.save(filepath + "scores_pd_train_rad"+rad+".npy", scores_dict["pd_train"])
+    np.save(filepath + "scores_pd_inter_rad"+rad+".npy", scores_dict["pd_inter"])
+    np.save(filepath + "scores_pd_test_rad"+rad+".npy", scores_dict["pd_test"])
+    np.save(filepath + "scores_pd_cores_rad"+rad+".npy", scores_dict["pd_cores"])
 
-    np.save(filepath + "scores_ac_train.npy", scores_dict["ac_train"])
-    np.save(filepath + "scores_ac_inter.npy", scores_dict["ac_inter"])
-    np.save(filepath + "scores_ac_test.npy", scores_dict["ac_test"])
-    np.save(filepath + "scores_ac_cores.npy", scores_dict["ac_cores"])
-
-    np.save(filepath + "scores_pd_train.npy", scores_dict["pd_train"])
-    np.save(filepath + "scores_pd_inter.npy", scores_dict["pd_inter"])
-    np.save(filepath + "scores_pd_test.npy", scores_dict["pd_test"])
-    np.save(filepath + "scores_pd_cores.npy", scores_dict["pd_cores"])
-
-    np.save(filepath + "scores_pd_ac_pos_train.npy", scores_dict["pd_ac_pos_train"])
-    np.save(filepath + "scores_pd_ac_pos_inter.npy", scores_dict["pd_ac_pos_inter"])
-    np.save(filepath + "scores_pd_ac_pos_test.npy", scores_dict["pd_ac_pos_test"])
-    np.save(filepath + "scores_pd_ac_pos_cores.npy", scores_dict["pd_ac_pos_cores"])
-
+    np.save(filepath + "scores_pd_ac_pos_train_rad"+rad+".npy", scores_dict["pd_ac_pos_train"])
+    np.save(filepath + "scores_pd_ac_pos_inter_rad"+rad+".npy", scores_dict["pd_ac_pos_inter"])
+    np.save(filepath + "scores_pd_ac_pos_test_rad"+rad+".npy", scores_dict["pd_ac_pos_test"])
+    np.save(filepath + "scores_pd_ac_pos_cores_rad"+rad+".npy", scores_dict["pd_ac_pos_cores"])
     
     
 def save_experimental_settings(filepath, settings_dict):
