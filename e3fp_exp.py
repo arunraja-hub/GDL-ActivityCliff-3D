@@ -319,7 +319,7 @@ if args.model == "mlp":
         print("Subexperiment ", (m,k), " completed. \n")
 
 # save experimental results
-save_qsar_ac_pd_results(filepath, scores_dict)
+save_qsar_ac_pd_results(filepath, scores_dict,rad = args.rad)
 
 # save experimental settings
 settings_dict["runtime"] = str(time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time)))
@@ -327,7 +327,7 @@ now = datetime.now()
 settings_dict["datetime"] = now.strftime("%d/%m/%Y %H:%M:%S")
 save_experimental_settings(filepath, settings_dict)
 
-display_experimental_results(filepath, decimals = 4, args=args.rad, repr = "e3fp")
+display_experimental_results(filepath, decimals = 4, rad=args.rad, repr = "e3fp")
     
                 
 
