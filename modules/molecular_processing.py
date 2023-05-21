@@ -119,7 +119,7 @@ def e3fp_from_smiles(smiles_string, radius_multiplier):
     # print(fpdict)
     # # return np.array(fp[5][0].to_rdkit())
     fprint_params = {'bits': 2**10, 'radius_multiplier': radius_multiplier, 'rdkit_invariants': True}
-    confgen_params = {'max_energy_diff': 0, 'first': 0}
+    confgen_params = {'max_energy_diff': 20, 'first': 1}
     #look into details of conformation generation of e3fp
 
     feature_list = fprints_from_smiles(smiles_string, "placeholder_name",  fprint_params=fprint_params,confgen_params=confgen_params, save=False)
