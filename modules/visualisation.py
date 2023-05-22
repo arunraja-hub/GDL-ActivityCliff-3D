@@ -95,6 +95,7 @@ def visualise_results(target,
                 for task in task_list:
                     if mol_repr == "e3fp":
                         for rad in e3fp_rad_list:
+                            print("rad", rad)
                             A_3d = np.load("results/" + this_target + "/" + mol_repr + "_" + regr_type + "/" + "scores_" + task +"_rad" + rad + ".npy")
 
                     else:
