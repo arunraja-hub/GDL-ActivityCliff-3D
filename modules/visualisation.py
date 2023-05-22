@@ -44,7 +44,7 @@ def visualise_results(target,
     """
     
     # create lists and dictionaries with experimental keys
-    target_list = ["postera_sars_cov_2_mpro"]
+    target_list = [target,]
     # ,"chembl_dopamine_d2", "chembl_factor_xa"]
     # ["chembl_dopamine_d2", "chembl_factor_xa",
     mol_repr_list = ["ecfp", "pdv", "gin","e3fp", "gcn"]
@@ -65,6 +65,8 @@ def visualise_results(target,
                  "pd_ac_pos_inter", 
                  "pd_ac_pos_test", 
                  "pd_ac_pos_cores"]
+
+    e3fp_rad_list = [str(0.5),str(1.0),str(1.5)]
 
     metric_list_regr = ["MAE", "MedAE", "RMSE", "MaxAE", "MSE", "Pearson's r", "R^2", "Test Cases"]
     metric_list_class = ["AUROC", "Accuracy", "Balanced Accuracy", "F1-Score", "MCC", "Sensitivity", "Specificity", "Precision", "Negative Predictive Value", "Test Cases", "Negative Test Cases", "Positive Test Cases"]
@@ -91,8 +93,12 @@ def visualise_results(target,
         for mol_repr in mol_repr_list:
             for regr_type in regr_type_list:
                 for task in task_list:
+                    if mol_repr == "e3fp":
+                        for rad in e3fp_rad_list:
+                            A_3d = np.load("results/" + this_target + "/" + mol_repr + "_" + regr_type + "/" + "scores_" + task +"_rad" + rad + ".npy")
 
-                    A_3d = np.load("results/" + this_target + "/" + mol_repr + "_" + regr_type + "/" + "scores_" + task + ".npy")
+                    else:
+                        A_3d = np.load("results/" + this_target + "/" + mol_repr + "_" + regr_type + "/" + "scores_" + task + ".npy")
 
                     if task in ["qsar_train", "qsar_test"]:
                         for (k, metric) in enumerate(metric_list_regr):
