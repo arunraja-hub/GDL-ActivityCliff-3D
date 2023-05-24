@@ -7,4 +7,4 @@ args = parser.parse_args()
 
 
 drawing = svg2rlg(str(args.file))
-renderPDF.drawToFile(drawing, args = parser.parse_args()[:-4]+".pdf")
+renderPDF.drawToFile(drawing, str(args.file)[:-4]+".pdf")
